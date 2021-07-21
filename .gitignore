@@ -1,0 +1,4 @@
+test.py
+.dist
+__pycache__
+csgo_saved_item_shuffles.txt
