@@ -2,7 +2,7 @@
 
 csgoinvshuffle is a Python package designed to create shuffle configs for the game CS:GO.
 
-With this package you can easily shuffle between different weapon types (e.g. M4A4 and M4A1-S) and have less limits in cusomizing the shuffle experience than in the in-game settings.
+With this package you can easily shuffle between different weapon types (e.g. M4A4 and M4A1-S) and have less limits in customizing the shuffle experience than with the in-game settings.
 
 ## Note: 
 CS:GO never really queues your items in a random order.
