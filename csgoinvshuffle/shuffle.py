@@ -50,17 +50,18 @@ class ShuffleConfig:
         if cycle_slot < 0:
             raise ValueError(f"Cycle slot (Value: {cycle_slot}) cannot be below 0")
 
+        if not item.equippable:
+            return
+
         for item_slot in shuffleslots:
             if not cycle_slot:
                 self.__slotmap[item_slot][cycle_slot] = item.id
             else:
-                try:
-                    if self.__slotmap[item_slot][cycle_slot-1]:
-                        self.__slotmap[item_slot][cycle_slot] = item.id
-                    else:
-                        raise ValueError(f"The cycle slot (Slot: {cycle_slot-1}) before slot {cycle_slot} doesn't have an Item")
-                except KeyError:
+                if cycle_slot-1 in self.__slotmap[item_slot].keys():
+                    self.__slotmap[item_slot][cycle_slot] = item.id
+                else:
                     raise ValueError(f"The cycle slot (Slot: {cycle_slot-1}) before slot {cycle_slot} doesn't have an Item")
+                
 
 
     def set_item(self, cycle_slot: int, item: Item, side: int=TeamSide.BOTH):
