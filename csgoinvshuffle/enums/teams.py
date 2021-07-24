@@ -1,7 +1,7 @@
-from enum import unique, IntEnum
+from enum import unique, IntEnum, auto
 
 @unique
 class TeamSide(IntEnum):
-    BOTH = 0
-    T = 1
-    CT = 2
+    BOTH = auto()
+    T = auto()
+    CT = auto()

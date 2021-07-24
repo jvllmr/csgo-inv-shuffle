@@ -51,9 +51,31 @@ sc.set_item(1, music_kits[1])
 sc.save()
 ```
 
-As you can see in the last example, an inventory is equipped with filter attributes.
-The filters are dynamically generated when you add items to the inventory and you can issue `python print(dir(inv))`
+As you can see in the last example, an inventory is equipped with filter attributes and can be handled like a list.
+The filters are dynamically generated when you add items to the inventory and you can issue `print(dir(inv))`
 to get an overview of the different filter options.
 To get an overview of what values the item properties can have, you can lookup https://steamcommunity.com/profiles/YOUR_STEAM_ID_64/inventory/json/730/2.
 Typical values for the property `tags_internal_name` are provided by the TagsInternalName enum.
+
+
+### Create a shuffle cycle for only one team side
+
+```python
+from csgoinvshuffle import ShuffleConfig, get_inventory
+from csgoinvshuffle.enums import TagsInternalName, TeamSide
+
+with ShuffleConfig() as sc:
+    inv = get_inventory("YOUR_STEAM_ID_64")
+    knives = inv.filter_by_tags_internal_name(TagsInternalName.KNIVES)
+    classic_knife = knives.filter_by_tags_internal_name(TagsInternalName.CLASSIC_KNIFE)[0]
+    karambit = knives.filter_by_tags_internal_name(TagsInternalName.KARAMBIT_KNIFE)[0]
+    butterfly = knives.filter_by_custom_name("crypto is for n00bs")[0]
+    # First map karambit, second map classic knife, third map butterfly, next map karambit again...
+    # On T side only
+    my_shuffle_cycle = [karambit, classic_knife, butterfly] 
+    sc.add_items(my_shuffle_cycle, TeamSide.T)
+```
+
+By default, the attribute methods from `ShuffleConfig` do everything for both teams.
+If you want to have different shuffle cycles on the opposing sides, you have to state it with a parameter.
 
