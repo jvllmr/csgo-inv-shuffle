@@ -191,7 +191,8 @@ class ShuffleConfig:
                 try:
                     item_id = json[item_slot][n]
                 except KeyError:
-                    raise ValueError(f"Cycle Slot {n} of item slot {item_slot} doesn't have a value")
+                    if n > 0:
+                        raise ValueError(f"Cycle Slot {n} of item slot {item_slot} doesn't have a value")
 
                 self.__slotmap[item_slot][n] = item_id
 
