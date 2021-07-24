@@ -1,9 +1,9 @@
-from functools import cached_property, cache
+from functools import cached_property
 from .enums import LoadoutSlot, TagsInternalName, TeamSide
 
 
 _slot_tag_map_ct = {
-        LoadoutSlot.AGENT_CT : (TagsInternalName.AGENTS_BROKEN_FANG_CT, TagsInternalName.AGENTS_SHATTERED_WEB_CT),
+        LoadoutSlot.AGENT_CT : (TagsInternalName.AGENTS_BROKEN_FANG, TagsInternalName.AGENTS_SHATTERED_WEB),
         LoadoutSlot.KNIFE_CT : (TagsInternalName.KNIVES),
         LoadoutSlot.M4A4 : (TagsInternalName.M4A4, TagsInternalName.M4A1_S),
         LoadoutSlot.M4A1_S : (TagsInternalName.M4A4, TagsInternalName.M4A1_S),
@@ -34,7 +34,7 @@ _slot_tag_map_ct = {
     }
 
 _slot_tag_map_t = {
-    LoadoutSlot.AGENT_T : (TagsInternalName.AGENTS_BROKEN_FANG_T, TagsInternalName.AGENTS_SHATTERED_WEB_T),
+    LoadoutSlot.AGENT_T : (TagsInternalName.AGENTS_BROKEN_FANG, TagsInternalName.AGENTS_SHATTERED_WEB),
     LoadoutSlot.KNIFE_T : (TagsInternalName.KNIVES),
     LoadoutSlot.GLOCK_18 : (TagsInternalName.GLOCK_18),
     LoadoutSlot.P250_T : (TagsInternalName.P250),
@@ -65,6 +65,56 @@ _slot_tag_map_t = {
 _slot_tag_map = {
     LoadoutSlot.MUSIC_KIT : [TagsInternalName.MUSIC_KITS]
 }
+
+# Market hash names of T agents
+_agents_t = [
+    'Sir Bloody Miami Darryl | The Professionals',
+    'Sir Bloody Loudmouth Darryl | The Professionals',
+    'Sir Bloody Darryl Royale | The Professionals',
+    'Sir Bloody Skullhead Darryl | The Professionals',
+    'Sir Bloody Silent Darryl | The Professionals',
+    "'The Doctor' Romanov | Sabre",
+    'The Elite Mr. Muhlik | Elite Crew',
+    'Number K | The Professionals',
+    'Safecracker Voltzmann | The Professionals',
+    'Blackwolf | Sabre',
+    'Rezan The Ready | Sabre',
+    'Rezan the Redshirt | Sabre',
+    'Prof. Shahmat | Elite Crew',
+    'Getaway Sally | The Professionals',
+    'Little Kev | The Professionals',
+    'Osiris | Elite Crew',
+    'Slingshot | Phoenix',
+    'Dragomir | Sabre',
+    'Maximus | Sabre',
+    'Street Soldier | Phoenix',
+    'Dragomir | Sabre Footsoldier',
+    'Enforcer | Phoenix',
+    'Ground Rebel | Elite Crew',
+    'Soldier | Phoenix',
+]
+
+# Market hash names of CT agents
+_agents_ct = [
+    'Special Agent Ava | FBI',
+    'Lt. Commander Ricksaw | NSWC SEAL',
+    "Cmdr. Mae 'Dead Cold' Jamison | SWAT",
+    '1st Lieutenant Farlow | SWAT',
+    "'Two Times' McCoy | USAF TACP",
+    'Michael Syfers | FBI Sniper',
+    "'Two Times' McCoy | TACP Cavalry",
+    "John 'Van Healen' Kask | SWAT",
+    "Sergeant Bombson | SWAT",
+    "'Blueberries' Buckshot | NSWC SEAL",
+    "Buckshot | NSWC SEAL",
+    'Markus Delrow | FBI HRT',
+    'Chem-Haz Specialist | SWAT',
+    '3rd Commando Company | KSK',
+    'Seal Team 6 Soldier | NSWC SEAL',
+    'Bio-Haz Specialist | SWAT',
+    'B Squadron Officer | SAS',
+    'Operator | FBI SWAT',
+]
 
 _equippable = (
     "weapon_",
@@ -108,7 +158,6 @@ class Item:
                     return True
         return False
 
-    @cache
     def __shuffle_slots(self, side=None) -> list[int]:
         if side == TeamSide.CT:
             needed_map = _slot_tag_map_ct
@@ -121,8 +170,14 @@ class Item:
 
         for slot, tag_names in needed_map.items():
             for tag in self.tags:
-                if tag["internal_name"] in tag_names:
-                    slots.append(slot.value)
+                if (internal_name := tag["internal_name"]) in tag_names:
+                    if internal_name == TagsInternalName.AGENTS_BROKEN_FANG or internal_name == TagsInternalName.AGENTS_SHATTERED_WEB:
+                        if side == TeamSide.CT and self.market_hash_name in _agents_ct:
+                            slots.append(slot.value)
+                        elif side == TeamSide.T and self.market_hash_name in _agents_t:
+                            slots.append(slot.value)
+                    else:
+                        slots.append(slot.value)
 
         return slots if self.equippable else []
 
