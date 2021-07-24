@@ -182,3 +182,21 @@ class ShuffleConfig:
 
         return success
 
+    def inject_json(self, json: dict) -> None:
+        if not isinstance(json, dict):
+            raise TypeError(f'json has to be a dictionary')
+
+        for item_slot in json:
+            for n in range(len(json[item_slot])):
+                try:
+                    item_id = json[item_slot][n]
+                except KeyError:
+                    raise ValueError(f"Cycle Slot {n} of item slot {item_slot} doesn't have a value")
+
+                self.__slotmap[item_slot][n] = item_id
+
+    def get_json(self) -> dict:
+        return self.__slotmap
+
+
+

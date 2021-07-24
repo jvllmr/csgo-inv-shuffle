@@ -4,14 +4,16 @@ csgoinvshuffle is a Python package designed to create shuffle configs for the ga
 
 With this package you can easily shuffle between different weapon types (e.g. M4A4 and M4A1-S) and have less limits in cusomizing the shuffle experience than in the in-game settings.
 
-##Note: 
+## Note: 
 CS:GO never really queues your items in a random order.
-The items are arranged in one simple cycle.
+The items are arranged in one simple, predefined cycle.
+This package aims to creating shuffles to your liking with ease
 
 You can use the config file it creates and replace `<path_to_your_steam>/userdata/<your_steam_3id>/730/remote/cfg/csgo_saved_item_shuffles.txt` with it to apply your config.
 
 
-###HINT: CS:GO needs to be closed while replacing the file
+#### HINT: 
+CS:GO needs to be closed while replacing the file
 
 
 
@@ -48,4 +50,10 @@ sc.set_item(0 , music_kits[3])
 sc.set_item(1, music_kits[1])
 sc.save()
 ```
+
+As you can see in the last example, an inventory is equipped with filter attributes.
+The filters are dynamically generated when you add items to the inventory and you can issue `python print(dir(inv))`
+to get an overview of the different filter options.
+To get an overview of what values the item properties can have, you can lookup https://steamcommunity.com/profiles/YOUR_STEAM_ID_64/inventory/json/730/2.
+Typical values for the property `tags_internal_name` are provided by the TagsInternalName enum.
 
