@@ -2,7 +2,7 @@ from .item import Item
 from csgoinvshuffle import shuffleformat
 from .enums import LoadoutSlot, TeamSide
 from functools import cache
-from os.path import abspath, basename
+from os.path import abspath
 
 class ShuffleConfig:
     __slotmap = dict()
@@ -11,7 +11,7 @@ class ShuffleConfig:
     def __init__(self, path: str="./csgo_saved_item_shuffles.txt"):
         self.path = abspath(path)
 
-        
+
         for enum in LoadoutSlot:
             self.__slotmap[enum.value] = dict()
             
