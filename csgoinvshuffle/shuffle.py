@@ -1,13 +1,16 @@
 from .item import Item
 from csgoinvshuffle import shuffleformat
 from .enums import LoadoutSlot, TeamSide
-
+from functools import cache
+from os.path import abspath, dirname
 
 class ShuffleConfig:
     __slotmap = dict()
 
 
-    def __init__(self, filename: str="csgo_saved_item_shuffles.txt"):
+    def __init__(self, filename: str="csgo_saved_item_shuffles.txt", path: str= '.'):
+        path = abspath(path)
+        self.path = dirname(path)
         self.filename = filename
 
         for enum in LoadoutSlot:
@@ -36,6 +39,7 @@ class ShuffleConfig:
 
             f.write(shuffleformat.END)
 
+    @cache
     def __hex_convert(self, integer: int):
         converted = hex(integer).upper()
         while len(converted) < 18:
