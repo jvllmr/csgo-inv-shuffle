@@ -1,3 +1,4 @@
+[![PyPI version](https://badge.fury.io/py/csgoinvshuffle.svg)](https://badge.fury.io/py/csgoinvshuffle)
 # Description
 
 csgoinvshuffle is a Python package designed to create shuffle configs for the game CS:GO.
