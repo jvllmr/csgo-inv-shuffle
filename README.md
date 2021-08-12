@@ -1,3 +1,7 @@
+[![PyPI version](https://badge.fury.io/py/csgoinvshuffle.svg)](https://badge.fury.io/py/csgoinvshuffle)
+[![GitHub license](https://img.shields.io/github/license/kreyoo/csgo-inv-shuffle)](https://github.com/kreyoo/csgo-inv-shuffle/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/kreyoo/csgo-inv-shuffle)](https://github.com/kreyoo/csgo-inv-shuffle/issues)
+[![GitHub forks](https://img.shields.io/github/forks/kreyoo/csgo-inv-shuffle)](https://github.com/kreyoo/csgo-inv-shuffle/network)
 # Description
 
 csgoinvshuffle is a Python package designed to create shuffle configs for the game CS:GO.
