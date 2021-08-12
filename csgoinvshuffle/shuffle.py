@@ -3,6 +3,7 @@ from csgoinvshuffle import shuffleformat
 from .enums import LoadoutSlot, TeamSide
 from functools import cache
 from os.path import abspath
+from random import random
 
 class ShuffleConfig:
     __slotmap = dict()
@@ -31,7 +32,11 @@ class ShuffleConfig:
             for item_slot in self.__slotmap:
                 items = str()
                 for cycle_slot, item_id in self.__slotmap[item_slot].items():
-                    items += shuffleformat.ITEM_ENTRY.replace("$nr$", str(cycle_slot)).replace("$item_id$", self.__hex_convert(int(item_id)))
+                    
+                    ITEM_ENTRY = shuffleformat.ITEM_ENTRY
+                    if cycle_slot > 9:
+                        ITEM_ENTRY.replace(" ", "")
+                    items += ITEM_ENTRY.replace("$nr$", str(cycle_slot)).replace("$item_id$", self.__hex_convert(int(item_id)))
                 
                 loadoutslot = shuffleformat.SLOT_ENTRY.replace("$id$", str(item_slot)).replace("$item_entries$", items)
                 f.write(loadoutslot)
@@ -203,5 +208,14 @@ class ShuffleConfig:
     def get_json(self) -> dict:
         return self.__slotmap
 
-
-
+    def randomize(self, n: int=100) -> None:
+        """
+        Takes the items in the ShuffleConfig and stacks them up to a cycle slot n in random order.
+        """
+        for item_slot in self.__slotmap:
+            items = list()
+            for _, v in self.__slotmap[item_slot].items():
+                items.append(v)
+            
+            for i in range(len(items)-1, n):
+                self.__slotmap[item_slot][i] = items[int((len(items)-1)*random())]
