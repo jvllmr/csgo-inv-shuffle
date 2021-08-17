@@ -31,7 +31,8 @@ _slot_tag_map_ct = {
         LoadoutSlot.NEGEV_CT : (TagsInternalName.NEGEV),
         LoadoutSlot.M249_CT : (TagsInternalName.M249),
         LoadoutSlot.DUAL_BERETTAS_CT : (TagsInternalName.DUAL_BERETTAS),
-    }
+        LoadoutSlot.GLOVES_CT: (TagsInternalName.GLOVES),
+}
 
 _slot_tag_map_t = {
     LoadoutSlot.AGENT_T : (TagsInternalName.AGENTS_BROKEN_FANG, TagsInternalName.AGENTS_SHATTERED_WEB),
@@ -60,6 +61,7 @@ _slot_tag_map_t = {
     LoadoutSlot.M249_T : (TagsInternalName.M249),
     LoadoutSlot.NEGEV_T : (TagsInternalName.NEGEV),
     LoadoutSlot.DUAL_BERETTAS_T : (TagsInternalName.DUAL_BERETTAS),
+    LoadoutSlot.GLOVES_T: (TagsInternalName.GLOVES),
 }
 
 _slot_tag_map = {
