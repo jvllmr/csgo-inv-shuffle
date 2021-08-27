@@ -1,26 +1,25 @@
+from csgoinvshuffle.enums.filters_enums import TagsInternalName
 import requests
 from .item import Item
-from enum import Enum
+from enum import Enum, EnumMeta
+
+class NotAnItemError(TypeError):
+    """Something wasn't an item"""
+    def __init__(self, item, *args, **kwargs):
+        super().__init__(f"{str(type(item))} is not an Item", *args, **kwargs)
+        
 
 class Inventory(list):
-
-    def __init__(self, *args):
-        super().__init__(args)
-        for item in args:
-            if isinstance(item, list):
-                if isinstance(item, Inventory):
-                    self.owner_id = item.owner_id
-                    
-                for subitem in item:
-                    self.append(subitem)  
-                self.remove(item)
-            else:
-                self.__add_filters(item)
-
+    """
+    Represents a CS:GO Inventory
+    """
+    def __init__(self, *items):
+        for item in items:
+            self.append(item)
+            
     def append(self, item: Item):
         if not isinstance(item, Item):
-            raise TypeError(f"{str(type(item))} is not an Item")
-        self.__add_filters(item)
+            raise NotAnItemError(item)
         return super().append(item)
     
     def __repr__(self):
@@ -29,33 +28,19 @@ class Inventory(list):
     def __str__(self):
         return str(list(map(lambda item: str(item), self)))
     
+    def filter(self, value:Enum, filter_by:EnumMeta=TagsInternalName):
+        
+        if not isinstance(filter_by, EnumMeta):
+            raise TypeError("filter_by argument needs to be an EnumMeta")
+        
+        value = value if not isinstance(value, Enum) else value.value
 
-    def __add_filters(self, item: Item) -> None:
-        """
-        Adds the filters for item attributes
-        """
-        for attr in dir(item):
-            if not attr.startswith("_"):
+        if filter_by == TagsInternalName:
+            filter_ = lambda x: value in [t["internal_name"] for t in x.tags]
+        else:
+            raise ValueError("Filter for that enum isn't implemented")
 
-                attr_value = getattr(item, attr)
-                if type(attr_value) == list:
-                    
-                    for entry in attr_value:
-                        """
-                        This was originally used for the custom name tag filter
-
-                        if type(entry) == str:
-                            function_name= f"filter_by_{attr}_{entry.split(':')[0].replace(' ','_').lower()}"
-                            if not getattr(self, function_name, ""):
-                                setattr(self, function_name, lambda s, attr=attr: Inventory([x for x in self if str(s) in str(getattr(x,attr)[0])]))
-                        """
-                        if type(entry) == dict:
-                            for key in entry.keys():
-                                if not getattr(self, f"filter_by_{attr}_{key}", ""):
-                                    setattr(self, f"filter_by_{attr}_{key}", lambda s , attr=attr, key=key: Inventory([x for x in self for d in getattr(x,attr) if str(getattr(s, "value", s)) in str(d[key])]))
-                else:
-                    if not getattr(self, f"filter_by_{attr}", ""):
-                        setattr(self, f"filter_by_{attr}", lambda s, attr=attr: Inventory([x for x in self if str(getattr(s, "value", s)) in str(getattr(x, attr))]))
+        return Inventory(*filter(filter_, self))
 
 def __parse_inventory(json: dict, steamid64: str) -> Inventory:
     inv = Inventory()

@@ -1,3 +1,4 @@
+from csgoinvshuffle.utils import get_depending_item_slots
 from .item import Item, _slot_tag_map_ct, _slot_tag_map_t, _slot_tag_map
 from csgoinvshuffle import shuffleformat
 from .enums import LoadoutSlot, TeamSide
@@ -207,44 +208,23 @@ class ShuffleConfig:
 
                 self.__slotmap[item_slot][n] = item_id
 
-    def get_json(self) -> dict:
+    def get_dict(self) -> dict:
         return self.__slotmap
 
-    def __get_loadout_slot_enum(self, item_slot: int) -> Enum:
-        for enum in LoadoutSlot:
-            if enum == item_slot:
-                return enum
-
-    def __get_depending_item_slots_helper(self, item_slot: int, slot_tag_map: dict[Enum, tuple]) -> List[int]:
-        depending_item_slots = list()
-        loadout_enum = self.__get_loadout_slot_enum(item_slot)
-        for k, v in slot_tag_map.items():
-            if sorted(v) == sorted(slot_tag_map[loadout_enum]):
-                depending_item_slots.append(k.value)
-        
-        depending_item_slots.remove(item_slot)
-        return depending_item_slots
-
-    def __get_depending_item_slots(self, item_slot: int) -> List[int]:
-        if value := self.__get_depending_item_slots_helper(item_slot, _slot_tag_map_t):
-            return value
-        elif value := self.__get_depending_item_slots_helper(item_slot, _slot_tag_map_ct):
-            return value
-        elif value := self.__get_depending_item_slots_helper(item_slot, _slot_tag_map):
-            return value
-            
     def randomize(self, n: int=100) -> None:
         """
         Takes the items in the ShuffleConfig and stacks them up to a cycle slot n in random order.
         """
         for item_slot in self.__slotmap:
-            depending_itemslots = self.__get_depending_item_slots(item_slot)
-
+            depending_itemslots = get_depending_item_slots(item_slot)
+            
             items = list()
-            for _, v in self.__slotmap[item_slot].items():
+            for v in self.__slotmap[item_slot].values():
                 items.append(v)
+                
+            if not items:
+                continue
             
             for i in range(len(items)-1, n):
-                self.__slotmap[item_slot][i] = items[int((len(items)-1)*random())]
                 for slot in depending_itemslots:
                     self.__slotmap[slot][i] = items[int((len(items)-1)*random())]
