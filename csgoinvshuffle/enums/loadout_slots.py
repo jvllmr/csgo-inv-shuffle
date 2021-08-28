@@ -63,4 +63,3 @@ class LoadoutSlot(IntEnum):
     MUSIC_KIT = 3538944
     GLOVES_T = 2150170624
     GLOVES_CT = 3223912448
-

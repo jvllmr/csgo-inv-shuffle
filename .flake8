@@ -1,0 +1,5 @@
+[flake8]
+ignore = E501, E226, E252, W293
+exclude = 
+    test.py,
+    setup.py

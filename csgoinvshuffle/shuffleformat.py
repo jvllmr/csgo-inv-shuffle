@@ -1,3 +1,6 @@
+# flake8: noqa
+
+
 HEADER = "\"SavedItemShuffles\"\n{\n"
 INDENT = "\t"
 ENABLED_INDENT = INDENT + INDENT

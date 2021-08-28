@@ -1,3 +1,5 @@
-from .shuffle import ShuffleConfig
-from .inventory import get_inventory
+# flake8: noqa
+
+from csgoinvshuffle.shuffle import ShuffleConfig
+from csgoinvshuffle.inventory import get_inventory
 

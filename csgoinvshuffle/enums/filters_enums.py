@@ -5,8 +5,10 @@ from enum import Enum, unique
 This file contains enums for filtering through inventories
 """
 
+
 class StrEnum(str, Enum):
     pass
+
 
 @unique
 class TagsInternalName(StrEnum):

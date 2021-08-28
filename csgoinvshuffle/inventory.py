@@ -1,7 +1,8 @@
 from csgoinvshuffle.enums.filters_enums import TagsInternalName
 import requests
-from .item import Item
+from csgoinvshuffle.item import Item
 from enum import Enum, EnumMeta
+
 
 class NotAnItemError(TypeError):
     """Something wasn't an item"""
@@ -28,7 +29,7 @@ class Inventory(list):
     def __str__(self):
         return str(list(map(lambda item: str(item), self)))
     
-    def filter(self, value:Enum, filter_by:EnumMeta=TagsInternalName):
+    def filter(self, value: Enum, filter_by: EnumMeta=TagsInternalName):
         
         if not isinstance(filter_by, EnumMeta):
             raise TypeError("filter_by argument needs to be an EnumMeta")
@@ -36,15 +37,17 @@ class Inventory(list):
         value = value if not isinstance(value, Enum) else value.value
 
         if filter_by == TagsInternalName:
-            filter_ = lambda x: value in [t["internal_name"] for t in x.tags]
+            def filter_(x):
+                return value in [t["internal_name"] for t in x.tags]
         else:
             raise ValueError("Filter for that enum isn't implemented")
 
         return Inventory(*filter(filter_, self))
 
+
 def __parse_inventory(json: dict, steamid64: str) -> Inventory:
     inv = Inventory()
-    setattr(inv, "owner_id" , steamid64)
+    setattr(inv, "owner_id", steamid64)
     for attributes in json["rgInventory"].values():
         item = Item()
         for key, value in attributes.items():
@@ -53,7 +56,9 @@ def __parse_inventory(json: dict, steamid64: str) -> Inventory:
         for key, value in json["rgDescriptions"][f"{item.classid}_{item.instanceid}"].items():
             # We create the actual inspect link for every item
             if key == "actions" or key == "market_actions":
-                json["rgDescriptions"][f"{item.classid}_{item.instanceid}"][key][0]["link"] = json["rgDescriptions"][f"{item.classid}_{item.instanceid}"][key][0]["link"].replace(r"%assetid%", str(item.id)).replace(r"%20M%listingid%",f" S{steamid64}")
+                json["rgDescriptions"][f"{item.classid}_{item.instanceid}"][key][0]["link"] = json["rgDescriptions"][f"{item.classid}_{item.instanceid}"][key][0]["link"].replace(
+                    r"%assetid%", str(item.id)
+                ).replace(r"%20M%listingid%", f" S{steamid64}")
             setattr(item, key, value)
 
         inv.append(item)
@@ -75,6 +80,6 @@ def get_inventory(steamid64: str) -> Inventory:
     if r.status_code == 200:
         return __parse_inventory(r.json(), steamid64)
     elif r.status_code == 429:
-        raise requests.HTTPError(f"Too many requests at once. Please try again in a minute.")
+        raise requests.HTTPError("Too many requests at once. Please try again in a minute.")
     else:
         raise requests.HTTPError(f"Steam returned status code {r.status_code}")
