@@ -1,5 +1,8 @@
 from subprocess import run
-from csgoinvshuffle import get_inventory
+try:
+    from csgoinvshuffle import get_inventory
+except ModuleNotFoundError:
+    raise ModuleNotFoundError('Please run "pip install ." in the projects root directory')
 import pytest
 
 
