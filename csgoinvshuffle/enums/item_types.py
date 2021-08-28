@@ -2,7 +2,7 @@
 
 
 from enum import IntEnum, unique
-import deprecated
+from deprecated import deprecated
 
 
 @deprecated(version='1.0.0', reason="This enum doesn't get maintained as it never made it to the first release")
