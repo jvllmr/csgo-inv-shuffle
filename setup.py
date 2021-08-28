@@ -22,6 +22,7 @@ setuptools.setup(
     ],
     install_requires=[
           'requests',
+          'deprecated'
       ],
     package_dir={"": "."},
     packages=setuptools.find_packages(where="."),
