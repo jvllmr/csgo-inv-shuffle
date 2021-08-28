@@ -8,4 +8,4 @@ def test_parse_inventory():
 
 
 def test_get_inventory(inv):
-    assert inv.owner_id == "76561198232352624"
+    assert get_inventory("76561198232352624").owner_id == "76561198232352624"
