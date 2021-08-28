@@ -4,7 +4,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/kreyoo/csgo-inv-shuffle)](https://github.com/kreyoo/csgo-inv-shuffle/network)
 # Description
 
-csgoinvshuffle is a Python package designed to create shuffle configs for the game CS:GO.
+csgoinvshuffle is a Python package designed to generate inventory shuffle config files for the game CS:GO.
 
 With this package you can easily shuffle between different weapon types (e.g. M4A4 and M4A1-S) and have less limits in customizing the shuffle experience than with the in-game settings.
 
