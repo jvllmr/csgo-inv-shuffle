@@ -5,3 +5,4 @@ csgo_saved_item_shuffles.txt
 dist
 *.egg-info
 .pytest_cache
+build
