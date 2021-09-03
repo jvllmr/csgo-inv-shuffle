@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Iterator, Union
 from csgoinvshuffle.enums.filters_enums import TagsInternalName
 import requests
 from csgoinvshuffle.item import Item
@@ -8,16 +10,24 @@ class NotAnItemError(TypeError):
     """Something wasn't an item"""
     def __init__(self, item, *args, **kwargs):
         super().__init__(f"{str(type(item))} is not an Item", *args, **kwargs)
-        
+    
 
 class Inventory(list):
     """
     Represents a CS:GO Inventory
     """
+    owner_id: str
+
     def __init__(self, *items):
         for item in items:
             self.append(item)
-            
+    
+    def __iter__(self) -> Iterator[Item]:
+        return super().__iter__()
+
+    def __getitem__(self, i: Union[slice, int]) -> Item:
+        return super().__getitem__(i)
+
     def append(self, item: Item):
         if not isinstance(item, Item):
             raise NotAnItemError(item)
@@ -29,7 +39,7 @@ class Inventory(list):
     def __str__(self):
         return str(list(map(lambda item: str(item), self)))
     
-    def filter(self, value: Enum, filter_by: EnumMeta=TagsInternalName):
+    def filter(self, value: Enum, filter_by: EnumMeta=TagsInternalName) -> Inventory[Item]:
         """Filter the inventory by a special property"""
 
         if not isinstance(filter_by, EnumMeta):
@@ -46,12 +56,13 @@ class Inventory(list):
         return Inventory(*filter(filter_, self))
 
 
-def parse_inventory(json: dict, steamid64: str) -> Inventory:
+def parse_inventory(json: dict, steamid64: str) -> Inventory[Item]:
     """Parses an inventory from a json"""
 
     inv = Inventory()
-    setattr(inv, "owner_id", steamid64)
+    inv.owner_id = steamid64
     for attributes in json["rgInventory"].values():
+
         item = Item()
         for key, value in attributes.items():
             setattr(item, key, value)
@@ -70,7 +81,7 @@ def parse_inventory(json: dict, steamid64: str) -> Inventory:
     return inv
     
 
-def get_inventory(steamid64: str) -> Inventory:
+def get_inventory(steamid64: str) -> Inventory[Item]:
     """
     Get the CS:GO Inventory of a steam user by his 64-bit ID
 

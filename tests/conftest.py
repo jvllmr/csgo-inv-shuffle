@@ -7,6 +7,7 @@ except ModuleNotFoundError:
 import pytest
 import utils
 
+
 def test_install():
     assert run(['pip', 'install', '-r', "requirements.txt"]).returncode == 0
     assert run(['pip', 'install', '.', '--use-feature=in-tree-build']).returncode == 0

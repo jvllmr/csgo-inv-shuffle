@@ -1,8 +1,10 @@
 from functools import cached_property
 from csgoinvshuffle.enums import LoadoutSlot, TagsInternalName, TeamSide
+from csgoinvshuffle.types import Description, Action, MarketAction, Tag
+from enum import Enum
 
 
-_slot_tag_map_ct: dict = {
+_slot_tag_map_ct: dict[Enum, tuple[Enum]] = {
     LoadoutSlot.AGENT_CT: (TagsInternalName.AGENTS_BROKEN_FANG, TagsInternalName.AGENTS_SHATTERED_WEB),
     LoadoutSlot.KNIFE_CT: (TagsInternalName.KNIVES,),
     LoadoutSlot.M4A4: (TagsInternalName.M4A4, TagsInternalName.M4A1_S),
@@ -34,7 +36,7 @@ _slot_tag_map_ct: dict = {
     LoadoutSlot.GLOVES_CT: (TagsInternalName.GLOVES,),
 }
 
-_slot_tag_map_t: dict = {
+_slot_tag_map_t: dict[Enum, tuple[Enum]] = {
     LoadoutSlot.AGENT_T: (TagsInternalName.AGENTS_BROKEN_FANG, TagsInternalName.AGENTS_SHATTERED_WEB),
     LoadoutSlot.KNIFE_T: (TagsInternalName.KNIVES,),
     LoadoutSlot.GLOCK_18: (TagsInternalName.GLOCK_18,),
@@ -64,12 +66,12 @@ _slot_tag_map_t: dict = {
     LoadoutSlot.GLOVES_T: (TagsInternalName.GLOVES,),
 }
 
-_slot_tag_map: dict = {
+_slot_tag_map: dict[Enum, tuple[Enum]] = {
     LoadoutSlot.MUSIC_KIT: (TagsInternalName.MUSIC_KITS,)
 }
 
 # Market hash names of T agents
-_agents_t: tuple = (
+_agents_t: tuple[str] = (
     'Sir Bloody Miami Darryl | The Professionals',
     'Sir Bloody Loudmouth Darryl | The Professionals',
     'Sir Bloody Darryl Royale | The Professionals',
@@ -97,7 +99,7 @@ _agents_t: tuple = (
 )
 
 # Market hash names of CT agents
-_agents_ct: tuple = (
+_agents_ct: tuple[str] = (
     'Special Agent Ava | FBI',
     'Lt. Commander Ricksaw | NSWC SEAL',
     "Cmdr. Mae 'Dead Cold' Jamison | SWAT",
@@ -131,6 +133,33 @@ _equippable: tuple = (
 
 class Item:
     """Represents a CS:GO Item"""
+
+    id: str
+    classid: str
+    instanceid: str
+    amount: str
+    hide_in_china: str
+    pos: int
+    appid: str
+    icon_url: str
+    icon_url_large: str
+    icon_drag_url: str
+    name: str
+    market_hash_name: str
+    market_name: str
+    name_color: str
+    background_color: str
+    type: str
+    tradable: int
+    marketable: int
+    commodity: int
+    market_tradable_restriction: str
+    descriptions: list[Description]
+    owner_descriptions: str
+    actions: list[Action]
+    market_actions: list[MarketAction]
+    tags: list[Tag]
+    fraudwarnings: list[str]
 
     def __iter__(self) -> tuple:
         for attr in dir(self):
