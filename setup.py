@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="csgoinvshuffle",
-    version="1.1.0",
+    version="1.1.1",
     author="Jan Vollmer",
     author_email="zunder325@gmail.com",
     description="A Python package for creating CS:GO shuffle config files. ",
