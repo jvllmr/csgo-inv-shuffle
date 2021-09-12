@@ -3,6 +3,7 @@
 [![GitHub license](https://img.shields.io/github/license/kreyoo/csgo-inv-shuffle)](https://github.com/kreyoo/csgo-inv-shuffle/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/kreyoo/csgo-inv-shuffle)](https://github.com/kreyoo/csgo-inv-shuffle/issues)
 ![PyPI - Downloads](https://img.shields.io/pypi/dd/csgoinvshuffle)
+![Tests](https://github.com/kreyoo/csgo-inv-shuffle/actions/workflows/pytest.yml/badge.svg)
 # Description
 
 csgoinvshuffle is a Python package designed to generate inventory shuffle config files for the game CS:GO.
