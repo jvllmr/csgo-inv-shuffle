@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="csgoinvshuffle",
-    version="1.1.1",
+    version="1.1.2",
     author="Jan Vollmer",
     author_email="zunder325@gmail.com",
     description="A Python package for creating CS:GO shuffle config files. ",
@@ -20,10 +20,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=[
-          'requests',
-          'deprecated'
-      ],
+    install_requires=["requests", "deprecated"],
     package_dir={"": "."},
     packages=setuptools.find_packages(where="."),
     python_requires=">=3.9",

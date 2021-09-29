@@ -5,7 +5,10 @@ from enum import IntEnum, unique
 from deprecated import deprecated
 
 
-@deprecated(version='1.0.0', reason="This enum doesn't get maintained as it never made it to the first release")
+@deprecated(
+    version="1.0.0",
+    reason="This enum doesn't get maintained as it never made it to the first release",
+)
 @unique
 class ItemTypeGC(IntEnum):
     """
@@ -17,6 +20,7 @@ class ItemTypeGC(IntEnum):
 
     INFO: Contains multiple entries for similar items
     """
+
     DESERT_EAGLE = 1
     DUAL_BERETTAS = 2
     AUG = 8

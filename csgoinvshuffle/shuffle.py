@@ -10,7 +10,7 @@ from random import random
 class ShuffleConfig:
     __slotmap = dict()
 
-    def __init__(self, path: str="./csgo_saved_item_shuffles.txt"):
+    def __init__(self, path: str = "./csgo_saved_item_shuffles.txt"):
         self.path = abspath(path)
 
         for enum in LoadoutSlot:
@@ -35,9 +35,13 @@ class ShuffleConfig:
                     ITEM_ENTRY = shuffleformat.ITEM_ENTRY
                     if cycle_slot > 9:
                         ITEM_ENTRY.replace(" ", "")
-                    items += ITEM_ENTRY.replace("$nr$", str(cycle_slot)).replace("$item_id$", self.__hex_convert(int(item_id)))
+                    items += ITEM_ENTRY.replace("$nr$", str(cycle_slot)).replace(
+                        "$item_id$", self.__hex_convert(int(item_id))
+                    )
 
-                loadoutslot = shuffleformat.SLOT_ENTRY.replace("$id$", str(item_slot)).replace("$item_entries$", items)
+                loadoutslot = shuffleformat.SLOT_ENTRY.replace(
+                    "$id$", str(item_slot)
+                ).replace("$item_entries$", items)
                 f.write(loadoutslot)
 
             f.write(shuffleformat.END)
@@ -67,7 +71,9 @@ class ShuffleConfig:
                 if cycle_slot - 1 in self.__slotmap[item_slot].keys():
                     self.__slotmap[item_slot][cycle_slot] = item.id
                 else:
-                    raise ValueError(f"The cycle slot (Slot: {cycle_slot-1}) before slot {cycle_slot} doesn't have an Item")
+                    raise ValueError(
+                        f"The cycle slot (Slot: {cycle_slot-1}) before slot {cycle_slot} doesn't have an Item"
+                    )
 
     def set_item(self, cycle_slot: int, item: Item, side: int = TeamSide.BOTH):
         """
@@ -97,7 +103,9 @@ class ShuffleConfig:
             self.set_item(cycle_slot, item, side)
             cycle_slot += 1
 
-    def __add_item(self, item: Item, shuffleslots: list[int], side: int = TeamSide.BOTH):
+    def __add_item(
+        self, item: Item, shuffleslots: list[int], side: int = TeamSide.BOTH
+    ):
         for item_slot in shuffleslots:
             self.set_item(len(self.__slotmap[item_slot]), item, side)
 
@@ -134,14 +142,16 @@ class ShuffleConfig:
         for item_slot in shuffleslots:
             for cycle_slot in range(len(self.__slotmap[item_slot])):
                 if removed:
-                    self.__slotmap[item_slot][cycle_slot-1] = self.__slotmap[item_slot][cycle_slot]
+                    self.__slotmap[item_slot][cycle_slot - 1] = self.__slotmap[
+                        item_slot
+                    ][cycle_slot]
 
                 if self.__slotmap[item_slot][cycle_slot] == item.id:
                     del self.__slotmap[item_slot][cycle_slot]
                     removed = True
 
             if removed and len(self.__slotmap[item_slot]):
-                del self.__slotmap[item_slot][len(self.__slotmap[item_slot])-1]
+                del self.__slotmap[item_slot][len(self.__slotmap[item_slot]) - 1]
 
         return removed
 
@@ -187,7 +197,7 @@ class ShuffleConfig:
 
     def inject_json(self, json: dict) -> None:
         if not isinstance(json, dict):
-            raise TypeError('json has to be a dictionary')
+            raise TypeError("json has to be a dictionary")
 
         for item_slot in json:
             for n in range(len(json[item_slot])):
@@ -195,7 +205,9 @@ class ShuffleConfig:
                     item_id = json[item_slot][n]
                 except KeyError:
                     if n > 0:
-                        raise ValueError(f"Cycle Slot {n} of item slot {item_slot} doesn't have a value")  # noqa: E501
+                        raise ValueError(
+                            f"Cycle Slot {n} of item slot {item_slot} doesn't have a value"
+                        )  # noqa: E501
 
                 self.__slotmap[item_slot][n] = item_id
 
@@ -209,7 +221,7 @@ class ShuffleConfig:
         """
         for item_slot in self.__slotmap:
             depending_itemslots = get_depending_item_slots(item_slot)
-    
+
             items = list()
             for v in self.__slotmap[item_slot].values():
                 items.append(v)

@@ -6,6 +6,7 @@ class LoadoutSlot(IntEnum):
     """
     An Enum referencing the different slots in CS:GO's item loadout
     """
+
     M4A1_S = 3222208572
     M4A4 = 3222208528
     GLOCK_18 = 2147614720

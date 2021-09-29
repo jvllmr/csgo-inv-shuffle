@@ -1,9 +1,7 @@
 from csgoinvshuffle.enums import LoadoutSlot
 from enum import Enum
 from typing import List
-from csgoinvshuffle.item import (_slot_tag_map,
-                                 _slot_tag_map_ct,
-                                 _slot_tag_map_t)
+from csgoinvshuffle.item import _slot_tag_map, _slot_tag_map_ct, _slot_tag_map_t
 
 
 def get_loadout_slot_enum_value(item_slot: int) -> LoadoutSlot:
@@ -12,8 +10,9 @@ def get_loadout_slot_enum_value(item_slot: int) -> LoadoutSlot:
             return enum
 
 
-def __get_depending_item_slots(loadout_slot: LoadoutSlot,
-                               slot_tag_map: dict[Enum, tuple]) -> List[int]:
+def __get_depending_item_slots(
+    loadout_slot: LoadoutSlot, slot_tag_map: dict[Enum, tuple]
+) -> List[int]:
     def compare(x, y):
         for e in x:
             if e not in y:
