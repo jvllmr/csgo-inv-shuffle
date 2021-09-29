@@ -54,7 +54,6 @@ class TagsInternalName(StrEnum):
     AGENTS_BROKEN_FANG = "set_op10_characters"
     AGENTS_SHATTERED_WEB = "set_op9_characters"
     AGENTS_RIPTIDE = "set_op11_characters"
-    AGENT = "Type_CustomPlayer"
     REVOLVER = "weapon_revolver"
     MP9 = "weapon_mp9"
     CLASSIC_KNIFE = "weapon_knife_css"
