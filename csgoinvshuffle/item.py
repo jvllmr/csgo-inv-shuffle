@@ -229,10 +229,7 @@ class Item:
         for slot, tag_names in needed_map.items():
             for tag in self.tags:
                 if (internal_name := tag["internal_name"]) in tag_names:
-                    if (
-                        internal_name == TagsInternalName.AGENTS_BROKEN_FANG
-                        or internal_name == TagsInternalName.AGENTS_SHATTERED_WEB
-                    ):
+                    if internal_name == TagsInternalName.AGENTS:
                         if side == TeamSide.CT and self.market_hash_name in _agents_ct:
                             slots.append(slot.value)
                         elif side == TeamSide.T and self.market_hash_name in _agents_t:
