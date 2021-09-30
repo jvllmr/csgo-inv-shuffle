@@ -5,10 +5,7 @@ from enum import Enum
 
 
 _slot_tag_map_ct: dict[Enum, tuple[Enum]] = {
-    LoadoutSlot.AGENT_CT: (
-        TagsInternalName.AGENTS_BROKEN_FANG,
-        TagsInternalName.AGENTS_SHATTERED_WEB,
-    ),
+    LoadoutSlot.AGENT_CT: (TagsInternalName.AGENTS),
     LoadoutSlot.KNIFE_CT: (TagsInternalName.KNIVES,),
     LoadoutSlot.M4A4: (TagsInternalName.M4A4, TagsInternalName.M4A1_S),
     LoadoutSlot.M4A1_S: (TagsInternalName.M4A4, TagsInternalName.M4A1_S),
@@ -40,10 +37,7 @@ _slot_tag_map_ct: dict[Enum, tuple[Enum]] = {
 }
 
 _slot_tag_map_t: dict[Enum, tuple[Enum]] = {
-    LoadoutSlot.AGENT_T: (
-        TagsInternalName.AGENTS_BROKEN_FANG,
-        TagsInternalName.AGENTS_SHATTERED_WEB,
-    ),
+    LoadoutSlot.AGENT_T: (TagsInternalName.AGENTS),
     LoadoutSlot.KNIFE_T: (TagsInternalName.KNIVES,),
     LoadoutSlot.GLOCK_18: (TagsInternalName.GLOCK_18,),
     LoadoutSlot.P250_T: (TagsInternalName.P250,),
