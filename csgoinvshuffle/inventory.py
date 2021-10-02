@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Iterator, Union
 from csgoinvshuffle.enums.filters_enums import TagsInternalName
 import requests
+from csgoinvshuffle.exceptions import InventoryIsPrivateException, TooManyRequestsAtOnce
 from csgoinvshuffle.item import Item
 from enum import Enum, EnumMeta
 
@@ -108,9 +109,14 @@ def get_inventory(steamid64: str) -> Inventory[Item]:
     )
 
     if r.status_code == 200:
-        return parse_inventory(r.json(), steamid64)
+        json = r.json()
+        if not json.get("success") and json.get("Error") == "This profile is private.":
+            raise InventoryIsPrivateException("The requested Inventory is private.")
+        elif not json.get("success"):
+            raise requests.HTTPError(json.get("Error"))
+        return parse_inventory(json, steamid64)
     elif r.status_code == 429:
-        raise requests.HTTPError(
+        raise TooManyRequestsAtOnce(
             "Too many requests at once. Please try again in a minute."
         )
     else:
