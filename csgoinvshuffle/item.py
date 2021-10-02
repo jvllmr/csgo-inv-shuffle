@@ -146,8 +146,7 @@ _equippable: tuple = (
     TagsInternalName.GLOVES,
     TagsInternalName.KNIVES,
     TagsInternalName.MUSIC_KITS,
-    TagsInternalName.AGENTS_BROKEN_FANG,
-    TagsInternalName.AGENTS_SHATTERED_WEB,
+    TagsInternalName.AGENTS,
 )
 
 
