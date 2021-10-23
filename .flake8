@@ -2,4 +2,5 @@
 ignore = E501, E226, E252, W293, F403, F405
 exclude = 
     test.py,
-    setup.py
+    setup.py,
+    .venv
