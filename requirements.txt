@@ -1,6 +1,0 @@
-requests
-deprecated
-build
-wheel
-pytest
-flake8
