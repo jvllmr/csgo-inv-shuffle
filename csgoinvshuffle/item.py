@@ -154,10 +154,11 @@ class Item:
     """Represents a CS:GO Item"""
 
     id: str
+    assetid: str
     classid: str
     instanceid: str
+    contextid: str
     amount: str
-    hide_in_china: str
     pos: int
     appid: str
     icon_url: str
@@ -180,6 +181,19 @@ class Item:
     tags: list[Tag]
     fraudwarnings: list[str]
 
+    def __init__(self, description, asset, steamid64):
+        for k, v in asset.items():
+            setattr(self, k, v)
+        for k, v in description.items():
+            if k == "actions" or k == "market_actions":
+                for action in range(len(v)):
+                    v[action]["link"] = (
+                        v[action]["link"]
+                        .replace(r"%assetid%", str(self.id))
+                        .replace(r"%20M%listingid%", f" S{steamid64}")
+                    )
+            setattr(self, k, v)
+
     def __iter__(self) -> tuple:
         for attr in dir(self):
             if not attr.startswith("_"):
@@ -193,6 +207,10 @@ class Item:
         if self.custom_name:
             custom_name_string = f"custom_name: '{self.custom_name}', "
         return f"<Item name: '{self.name}' {custom_name_string} id: {self.id}>"
+
+    @cached_property
+    def id(self) -> str:
+        return self.assetid
 
     @cached_property
     def custom_name(self) -> str:

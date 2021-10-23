@@ -17,6 +17,10 @@ def example_csgo_saved_item_shuffles() -> str:
     return __read_file("compare_data.txt")
 
 
+def example_inv_repr() -> str:
+    return __read_file("inventory_repr.txt")
+
+
 def new_shuffleconfig() -> str:
     f = open("./csgo_saved_item_shuffles.txt", "r", encoding="utf-8")
     data = f.read()

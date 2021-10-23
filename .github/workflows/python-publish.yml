@@ -32,5 +32,5 @@ jobs:
       - name: Publish package
         uses: d1618033/gh-action-python-publish-using-poetry@master
         with:
-          user: kreyoo
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          pypi_username: kreyoo
+          pypi_password: ${{ secrets.PYPI_API_TOKEN }}

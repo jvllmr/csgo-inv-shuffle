@@ -21,9 +21,23 @@ class Inventory(list):
 
     owner_id: str
 
-    def __init__(self, *items):
-        for item in items:
-            self.append(item)
+    def __init__(
+        self, *items: Item, assets=None, descriptions=None, steamid64: str = None
+    ):
+        if assets and descriptions and steamid64:
+            self.owner_id = steamid64
+            assets = iter(assets)
+            descriptions = iter(descriptions)
+            try:
+                while True:
+                    self.append(
+                        Item(next(descriptions), next(assets), steamid64=steamid64)
+                    )
+            except StopIteration:
+                return
+        else:
+            for item in items:
+                self.append(item)
 
     def __iter__(self) -> Iterator[Item]:
         return super().__iter__()
@@ -66,32 +80,9 @@ class Inventory(list):
 def parse_inventory(json: dict, steamid64: str) -> Inventory[Item]:
     """Parses an inventory from a json"""
 
-    inv = Inventory()
-    inv.owner_id = steamid64
-    for attributes in json["rgInventory"].values():
-
-        item = Item()
-        for key, value in attributes.items():
-            setattr(item, key, value)
-
-        for key, value in json["rgDescriptions"][
-            f"{item.classid}_{item.instanceid}"
-        ].items():
-            # We create the actual inspect link for every item
-            if key == "actions" or key == "market_actions":
-                json["rgDescriptions"][f"{item.classid}_{item.instanceid}"][key][0][
-                    "link"
-                ] = (
-                    json["rgDescriptions"][f"{item.classid}_{item.instanceid}"][key][0][
-                        "link"
-                    ]
-                    .replace(r"%assetid%", str(item.id))
-                    .replace(r"%20M%listingid%", f" S{steamid64}")
-                )
-            setattr(item, key, value)
-
-        inv.append(item)
-        del item
+    inv = Inventory(
+        assets=json["assets"], descriptions=json["descriptions"], steamid64=steamid64
+    )
 
     return inv
 
@@ -104,20 +95,18 @@ def get_inventory(steamid64: str) -> Inventory[Item]:
     """
     if not steamid64:
         return None
-    r = requests.get(
-        f"https://steamcommunity.com/profiles/{steamid64}/inventory/json/730/2"
-    )
+    r = requests.get(f"https://steamcommunity.com/inventory/{steamid64}/730/2")
 
     if r.status_code == 200:
         json = r.json()
-        if not json.get("success") and json.get("Error") == "This profile is private.":
-            raise InventoryIsPrivateException("The requested Inventory is private.")
-        elif not json.get("success"):
+        if not json.get("success"):
             raise requests.HTTPError(json.get("Error"))
         return parse_inventory(json, steamid64)
-    elif r.status_code == 429:
+    elif r.status_code == 403:
+        raise InventoryIsPrivateException("The requested Inventory is private.")
+    elif r.status_code == 500:
         raise TooManyRequestsAtOnce(
-            "Too many requests at once. Please try again in a minute."
+            "Too many requests at once. Please try again in few seconds."
         )
     else:
         raise requests.HTTPError(f"Steam returned status code {r.status_code}")
