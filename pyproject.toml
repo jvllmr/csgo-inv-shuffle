@@ -12,6 +12,12 @@ classifiers=[
         "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Typing :: Typed",
+        "Natural Language :: English",
+        "Intended Audience :: End Users/Desktop",
+        "Development Status :: 5 - Production/Stable",
+        "Topic :: Games/Entertainment :: First Person Shooters",
+        "Topic :: Software Development :: Libraries :: Python Modules"
     ]
 
 [tool.poetry.dependencies]
