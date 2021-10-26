@@ -76,7 +76,7 @@ with ShuffleConfig() as sc:
     knives = inv.filter(TagsInternalName.KNIVES)
     classic_knife = knives.filter(TagsInternalName.CLASSIC_KNIFE)[0]
     karambit = knives.filter(TagsInternalName.KARAMBIT_KNIFE)[0]
-    butterfly = filter(lambda x: x.custom_name == "crypto is for n00bs", knives)
+    butterfly = filter(lambda x: x.custom_name == "crypto is for n00bs", knives)[0]
     # First map karambit, second map classic knife, third map butterfly, next map karambit again...
     # On T side only
     my_shuffle_cycle = [karambit, classic_knife, butterfly] 
