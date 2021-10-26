@@ -27,7 +27,7 @@ CS:GO needs to be closed while replacing the file
 
 # How to install
 
-The package requires Python 3.9:
+The package requires at least Python 3.9:
 ```pip install csgoinvshuffle```
 
 # Basic usage
@@ -60,7 +60,8 @@ sc.save()
 As you can see in the last example, an inventory is equipped with a filter attribute and can be handled like a list.
 You can filter for enums and the filter uses the TagsInternalName by default, as it is the most useful one.
 Otherwise using the built-in filter() function on the Inventory Object is suggested.
-To get an overview of what values the attributes of an Item can have, you can lookup https://steamcommunity.com/profiles/YOUR_STEAM_ID_64/inventory/json/730/2.
+To get an overview of what values the attributes of an Item can have, you can lookup https://steamcommunity.com/inventory/<YOUR_STEAM_ID_64>/730/2 
+or lookup the typing definitions inside the item class.
 As mentioned, typical values for the property `tags_internal_name` are provided by the TagsInternalName enum.
 
 
