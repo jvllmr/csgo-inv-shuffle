@@ -99,4 +99,6 @@ class TagsInternalName(StrEnum):
     WEAR_FIELD_TESTED = "WearCategory2"
     WEAR_FACTORY_NEW = "WearCategory0"
     WEAR_WELL_WORN = "WearCategory3"
-    TEAM_STICKER_BIG = "Team69"
+    STICKER_TEAM_BIG = "Team69"
+    COLLECTION_RMR_2020 = "Tournament17"
+    COLLECTION_PRISMA2 = "set_community_25"

@@ -1,8 +1,8 @@
 from functools import cached_property
 from csgoinvshuffle.enums import LoadoutSlot, TagsInternalName, TeamSide
-from csgoinvshuffle.types import Description, Action, MarketAction, Tag
+from csgoinvshuffle.types import Description, Action, MarketAction, Sticker, Tag
 from enum import Enum
-
+import re
 
 _slot_tag_map_ct: dict[Enum, tuple[Enum]] = {
     LoadoutSlot.AGENT_CT: (TagsInternalName.AGENTS),
@@ -218,6 +218,38 @@ class Item:
             return attr[0].split(":", 1)[1].lstrip(" ").strip("'")
         else:
             return ""
+
+    @cached_property
+    def stickers(self) -> list[Sticker]:
+        for desc in self.descriptions:
+            if "sticker_info" in (val := desc.get("value")):
+                stickers: list[Sticker] = list()
+                if "Sticker" in val:
+                    regex_name = "Sticker"
+                    regex_link = "stickers"
+                else:
+                    regex_name = "Patch"
+                    regex_link = "patches"
+
+                links = iter(
+                    re.findall(
+                        rf"https://steamcdn-a\.akamaihd\.net/apps/730/icons/econ/{regex_link}[\w|\d|\.|\/]+\.png",
+                        val,
+                    )
+                )
+
+                names = iter(
+                    re.findall(rf"<br>{regex_name}:[\w|\s|\(|\)|\,]+", val)[0]
+                    .lstrip("<br>Patch: ")
+                    .split(", ")
+                )
+
+                try:
+                    while True:
+                        stickers.append({"link": next(links), "name": next(names)})
+                except StopIteration:
+                    return stickers
+        return []
 
     @cached_property
     def equippable(self) -> bool:

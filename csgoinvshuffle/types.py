@@ -4,6 +4,7 @@ from typing import TypedDict
 class Description(TypedDict):
     type: str
     value: str
+    color: str
 
 
 class Action(TypedDict):
@@ -21,3 +22,8 @@ class Tag(TypedDict):
     name: str
     category: str
     category_name: str
+
+
+class Sticker(TypedDict):
+    icon_url: str
+    name: str
