@@ -1,7 +1,9 @@
 from functools import cached_property
 from csgoinvshuffle.enums import LoadoutSlot, TagsInternalName, TeamSide
+from csgoinvshuffle.enums.rarities import Rarity
 from csgoinvshuffle.types import Description, Action, MarketAction, Sticker, Tag
 from enum import Enum
+
 import re
 
 _slot_tag_map_ct: dict[Enum, tuple[Enum]] = {
@@ -250,6 +252,15 @@ class Item:
                 except StopIteration:
                     return stickers
         return []
+
+    @cached_property
+    def rarity(self) -> str:
+        for tag in self.tags:
+            if tag["category"] == "Rarity":
+                for rarity in Rarity:
+                    if rarity.value.lower() in tag["internal_name"].lower():
+                        return rarity.value
+        return None
 
     @cached_property
     def equippable(self) -> bool:
