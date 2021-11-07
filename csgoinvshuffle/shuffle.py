@@ -1,3 +1,4 @@
+from __future__ import annotations
 from csgoinvshuffle.utils import get_depending_item_slots
 from csgoinvshuffle.item import Item
 from csgoinvshuffle import shuffleformat
@@ -19,32 +20,37 @@ class ShuffleConfig:
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.save()
 
-    def __enter__(self):
+    def __enter__(self) -> ShuffleConfig:
         return self
+
+    def generate(self) -> str:
+        """
+        Returns the config content as a string
+        """
+        ret = shuffleformat.HEADER
+        for item_slot in self.__slotmap:
+            items = str()
+            for cycle_slot, item_id in self.__slotmap[item_slot].items():
+
+                ITEM_ENTRY = shuffleformat.ITEM_ENTRY
+                if cycle_slot > 9:
+                    ITEM_ENTRY.replace(" ", "")
+                items += ITEM_ENTRY.replace("$nr$", str(cycle_slot)).replace(
+                    "$item_id$", self.__hex_convert(int(item_id))
+                )
+
+            loadoutslot = shuffleformat.SLOT_ENTRY.replace(
+                "$id$", str(item_slot)
+            ).replace("$item_entries$", items)
+            ret += loadoutslot
+        return ret + shuffleformat.END
 
     def save(self):
         """
         Save the config to a file
         """
         with open(self.path, "w") as f:
-            f.write(shuffleformat.HEADER)
-            for item_slot in self.__slotmap:
-                items = str()
-                for cycle_slot, item_id in self.__slotmap[item_slot].items():
-
-                    ITEM_ENTRY = shuffleformat.ITEM_ENTRY
-                    if cycle_slot > 9:
-                        ITEM_ENTRY.replace(" ", "")
-                    items += ITEM_ENTRY.replace("$nr$", str(cycle_slot)).replace(
-                        "$item_id$", self.__hex_convert(int(item_id))
-                    )
-
-                loadoutslot = shuffleformat.SLOT_ENTRY.replace(
-                    "$id$", str(item_slot)
-                ).replace("$item_entries$", items)
-                f.write(loadoutslot)
-
-            f.write(shuffleformat.END)
+            f.write(self.generate())
 
     @cache
     def __hex_convert(self, integer: int):
