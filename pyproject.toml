@@ -1,3 +1,6 @@
+[project]
+name= "csgoinvshuffle"
+
 [tool.poetry]
 name = "csgoinvshuffle"
 version = "1.2.3"
