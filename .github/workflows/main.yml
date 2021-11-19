@@ -33,7 +33,7 @@ jobs:
           python -m poetry run flake8
       - name: Typechecking
         run: |
-          python -m poetry run mypy --install-types
+          python -m poetry run mypy --install-types --non-interactive
           python -m poetry run mypy
       - name: Testing
         run: |
