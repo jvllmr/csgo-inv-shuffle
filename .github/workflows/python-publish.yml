@@ -34,8 +34,3 @@ jobs:
         with:
           user: ${{ secrets.PYPI_USERNAME }}
           password: ${{ secrets.PYPI_API_TOKEN }}
-      - name: Publish package to GitHub 
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: ${{ secrets.ACCESS_TOKEN }}
-          repository_url: https://pypi.pkg.github.com/kreyoo/
