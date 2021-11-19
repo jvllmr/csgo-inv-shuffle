@@ -29,6 +29,7 @@ Deprecated = "^1.2.13"
 pytest = "^6.2.5"
 flake8 = "^4.0.1"
 black = "^21.11b1"
+mypy = ">=0.910"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
