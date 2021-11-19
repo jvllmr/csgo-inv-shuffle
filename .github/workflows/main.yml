@@ -34,7 +34,6 @@ jobs:
       - name: Typechecking
         run: |
           python -m poetry run mypy --install-types --non-interactive
-          python -m poetry run mypy
       - name: Testing
         run: |
           python -m poetry run pytest
