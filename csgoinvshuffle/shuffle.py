@@ -1,24 +1,86 @@
 from __future__ import annotations
+
 from csgoinvshuffle.utils import get_depending_item_slots
 from csgoinvshuffle.item import Item
 from csgoinvshuffle import shuffleformat
 from csgoinvshuffle.enums import LoadoutSlot, TeamSide
-from functools import cache
+from functools import cache, reduce
 from os.path import abspath
 from random import random
+import typing as t
+
+
+class SlotMap(list):
+    def __init__(self, lst: list[t.Tuple[int, list[str]]] = None):
+        if lst:
+            try:
+                assert len(lst) == len(LoadoutSlot)
+                for enum, slot in zip(LoadoutSlot, lst):
+                    assert enum == slot[0]
+                    for _str in slot[1]:
+                        assert isinstance(_str, str)
+            except AssertionError:
+                raise ValueError("List contains invalid values. Cannot create SlotMap")
+        else:
+            lst = list()
+            for enum in LoadoutSlot:
+                lst.append((enum.value, []))
+        super().__init__(lst)
+
+    def __iter__(self) -> t.Generator[t.Tuple[int, list[str]], None, None]:
+        yield from super().__iter__()
+
+    def __getitem__(self, index: int):  # type: ignore
+        for _tuple in self:
+            if _tuple[0] == index:
+                return _tuple
+
+    def __setitem__(self, index: int, value: t.Union[list[str], str]):  # type: ignore
+        if isinstance(value, str):
+            value = [value]
+        for _index, _tuple in enumerate(self):
+            if _tuple[0] == index:
+                return super().__setitem__(_index, (_tuple[0], value))
+
+    def append(  # type:ignore
+        self, item_slot: t.Union[int, LoadoutSlot], item: t.Union[Item, str]
+    ):
+        if isinstance(item, Item):
+            item = item.id
+        if isinstance(item_slot, LoadoutSlot):
+            item_slot = item_slot.value
+        self[item_slot][1].append(item)
+
+    def remove(  # type: ignore
+        self, item_slot: t.Union[int, LoadoutSlot], item: t.Union[Item, str]
+    ) -> bool:
+        if isinstance(item, Item):
+            item = item.id
+        if isinstance(item_slot, LoadoutSlot):
+            item_slot = item_slot.value
+        return self[item_slot][1].remove(item)
+
+    def insert(  # type: ignore
+        self,
+        item_slot: t.Union[int, LoadoutSlot],
+        cycle_slot: int,
+        item: t.Union[Item, str],
+    ):
+        if isinstance(item, Item):
+            item = item.id
+        if isinstance(item_slot, LoadoutSlot):
+            item_slot = item_slot.value
+        self[item_slot][1].insert(cycle_slot, item)
 
 
 class ShuffleConfig:
-    __slotmap = dict()
-
     def __init__(self, path: str = "./csgo_saved_item_shuffles.txt"):
         self.path = abspath(path)
+        self._slotmap = SlotMap()
 
-        for enum in LoadoutSlot:
-            self.__slotmap[enum.value] = dict()
-
-    def __exit__(self, exc_type, exc_value, exc_traceback):
-        self.save()
+    def __exit__(self, exc_type, *_):
+        if not exc_type:
+            self.save()
 
     def __enter__(self) -> ShuffleConfig:
         return self
@@ -28,9 +90,9 @@ class ShuffleConfig:
         Returns the config content as a string
         """
         ret = shuffleformat.HEADER
-        for item_slot in self.__slotmap:
+        for item_slot, item_ids in self._slotmap:
             items = str()
-            for cycle_slot, item_id in self.__slotmap[item_slot].items():
+            for cycle_slot, item_id in enumerate(item_ids):
 
                 ITEM_ENTRY = shuffleformat.ITEM_ENTRY
                 if cycle_slot > 9:
@@ -53,7 +115,7 @@ class ShuffleConfig:
             f.write(self.generate())
 
     @cache
-    def __hex_convert(self, integer: int):
+    def __hex_convert(self, integer: int) -> str:
         converted = hex(integer).upper()
         while len(converted) < 18:
             converted = "0x0" + converted[2:]
@@ -71,15 +133,7 @@ class ShuffleConfig:
             return
 
         for item_slot in shuffleslots:
-            if not cycle_slot:
-                self.__slotmap[item_slot][cycle_slot] = item.id
-            else:
-                if cycle_slot - 1 in self.__slotmap[item_slot].keys():
-                    self.__slotmap[item_slot][cycle_slot] = item.id
-                else:
-                    raise ValueError(
-                        f"The cycle slot (Slot: {cycle_slot-1}) before slot {cycle_slot} doesn't have an Item"
-                    )
+            self._slotmap[item_slot] = item.id
 
     def set_item(self, cycle_slot: int, item: Item, side: int = TeamSide.BOTH):
         """
@@ -112,8 +166,10 @@ class ShuffleConfig:
     def __add_item(
         self, item: Item, shuffleslots: list[int], side: int = TeamSide.BOTH
     ):
+        if not isinstance(item, Item):
+            raise TypeError(f"{str(type(item))} is not an Item")
         for item_slot in shuffleslots:
-            self.set_item(len(self.__slotmap[item_slot]), item, side)
+            self._slotmap.append(item_slot, item)
 
     def add_item(self, item: Item, side: int = TeamSide.BOTH):
         """
@@ -143,23 +199,11 @@ class ShuffleConfig:
     def __remove_item(self, item: Item, shuffleslots: list[int]) -> bool:
         if not isinstance(item, Item):
             raise TypeError(f"{str(type(item))} is not an Item")
-
-        removed = False
+        lst: list[bool] = list()
         for item_slot in shuffleslots:
-            for cycle_slot in range(len(self.__slotmap[item_slot])):
-                if removed:
-                    self.__slotmap[item_slot][cycle_slot - 1] = self.__slotmap[
-                        item_slot
-                    ][cycle_slot]
+            lst.append(self._slotmap.remove(item_slot, item))
 
-                if self.__slotmap[item_slot][cycle_slot] == item.id:
-                    del self.__slotmap[item_slot][cycle_slot]
-                    removed = True
-
-            if removed and len(self.__slotmap[item_slot]):
-                del self.__slotmap[item_slot][len(self.__slotmap[item_slot]) - 1]
-
-        return removed
+        return reduce(lambda x, y: x and y, lst)
 
     def remove_item(self, item: Item, side: int = TeamSide.BOTH) -> bool:
         """
@@ -201,41 +245,49 @@ class ShuffleConfig:
 
         return success
 
-    def inject_json(self, json: dict) -> None:
-        if not isinstance(json, dict):
-            raise TypeError("json has to be a dictionary")
+    def __insert_item(self, item: Item, cycle_slot: int, shuffleslots: list[int]):
+        if not isinstance(item, Item):
+            raise TypeError(f"{str(type(item))} is not an Item")
+        for item_slot in shuffleslots:
+            self._slotmap.insert(item_slot, cycle_slot, item)
 
-        for item_slot in json:
-            for n in range(len(json[item_slot])):
-                try:
-                    item_id = json[item_slot][n]
-                except KeyError:
-                    if n > 0:
-                        raise ValueError(
-                            f"Cycle Slot {n} of item slot {item_slot} doesn't have a value"
-                        )  # noqa: E501
+    def insert_item(self, item: Item, cycle_slot: int, side: int = TeamSide.BOTH):
+        """
+        Inserts an Item into the config on a cycle slot
+        """
+        if side == TeamSide.BOTH:
+            self.__insert_item(item, cycle_slot, item.shuffle_slots_ct)
+            self.__insert_item(item, cycle_slot, item.shuffle_slots_t)
+        elif side == TeamSide.CT:
+            self.__insert_item(item, cycle_slot, item.shuffle_slots_ct)
+        elif side == TeamSide.T:
+            self.__insert_item(item, cycle_slot, item.shuffle_slots_t)
 
-                self.__slotmap[item_slot][n] = item_id
+        if item.shuffle_slots:
+            self.__insert_item(item, cycle_slot, item.shuffle_slots)
 
-    def get_dict(self) -> dict:
-        return self.__slotmap
+    def insert_items(
+        self, items: list[Item], cycle_slot: int, side: int = TeamSide.BOTH
+    ):
+        """
+        Inserts an Items into the config on a cycle slot
+        """
+        for item in items:
+            self.insert_item(item, cycle_slot, side)
+            cycle_slot += 1
 
     def randomize(self, n: int = 100) -> None:
         """
         Takes the items in the ShuffleConfig
         and stacks them up to a cycle slot n in random order.
         """
-        for item_slot in self.__slotmap:
+        for item_slot, item_ids in self._slotmap:
             depending_itemslots = get_depending_item_slots(item_slot)
 
-            items = list()
-            for v in self.__slotmap[item_slot].values():
-                items.append(v)
-
-            if not items:
+            if not item_ids:
                 continue
 
-            for i in range(len(items) - 1, n):
+            for _ in range(len(item_ids) - 1, n):
                 for slot in depending_itemslots:
-                    index = int((len(items) - 1) * random())
-                    self.__slotmap[slot][i] = items[index]
+                    index = int((len(item_ids) - 1) * random())
+                    self._slotmap.append(item_slot, item_ids[index])

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Iterator, Union
+from typing import Iterator, Optional, SupportsIndex
 from csgoinvshuffle.enums.filters_enums import TagsInternalName
 import requests
 from csgoinvshuffle.exceptions import InventoryIsPrivateException, TooManyRequestsAtOnce
@@ -39,10 +39,10 @@ class Inventory(list):
             for item in items:
                 self.append(item)
 
-    def __iter__(self) -> Iterator[Item]:
+    def __iter__(self) -> Iterator[Item]:  # type: ignore
         return super().__iter__()
 
-    def __getitem__(self, i: Union[slice, int]) -> Item:
+    def __getitem__(self, i: SupportsIndex) -> Item:  # type: ignore
         return super().__getitem__(i)
 
     def append(self, item: Item):
@@ -56,9 +56,7 @@ class Inventory(list):
     def __str__(self):
         return str(list(map(lambda item: str(item), self)))
 
-    def filter(
-        self, value: Enum, filter_by: EnumMeta = TagsInternalName
-    ) -> Inventory[Item]:
+    def filter(self, value: Enum, filter_by: EnumMeta = TagsInternalName) -> Inventory:
         """Filter the inventory by a special property"""
 
         if not isinstance(filter_by, EnumMeta):
@@ -77,7 +75,7 @@ class Inventory(list):
         return Inventory(*filter(filter_, self))
 
 
-def parse_inventory(json: dict, steamid64: str) -> Inventory[Item]:
+def parse_inventory(json: dict, steamid64: str) -> Inventory:
     """Parses an inventory from a json"""
 
     inv = Inventory(
@@ -87,7 +85,7 @@ def parse_inventory(json: dict, steamid64: str) -> Inventory[Item]:
     return inv
 
 
-def get_inventory(steamid64: str) -> Inventory[Item]:
+def get_inventory(steamid64: str) -> Optional[Inventory]:
     """
     Get the CS:GO Inventory of a steam user by his 64-bit ID
 

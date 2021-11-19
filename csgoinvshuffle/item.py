@@ -1,13 +1,21 @@
 from functools import cached_property
 from csgoinvshuffle.enums import LoadoutSlot, TagsInternalName, TeamSide
 from csgoinvshuffle.enums.rarities import Rarity
-from csgoinvshuffle.types import Description, Action, MarketAction, Sticker, Tag
-from enum import Enum
+from csgoinvshuffle.types import (
+    Description,
+    Action,
+    MarketAction,
+    SlotTagMap,
+    Sticker,
+    Tag,
+)
+
+from typing import Tuple, Generator, Union
 
 import re
 
-_slot_tag_map_ct: dict[Enum, tuple[Enum]] = {
-    LoadoutSlot.AGENT_CT: (TagsInternalName.AGENTS),
+_slot_tag_map_ct: SlotTagMap = {
+    LoadoutSlot.AGENT_CT: (TagsInternalName.AGENTS,),
     LoadoutSlot.KNIFE_CT: (TagsInternalName.KNIVES,),
     LoadoutSlot.M4A4: (TagsInternalName.M4A4, TagsInternalName.M4A1_S),
     LoadoutSlot.M4A1_S: (TagsInternalName.M4A4, TagsInternalName.M4A1_S),
@@ -38,8 +46,8 @@ _slot_tag_map_ct: dict[Enum, tuple[Enum]] = {
     LoadoutSlot.GLOVES_CT: (TagsInternalName.GLOVES,),
 }
 
-_slot_tag_map_t: dict[Enum, tuple[Enum]] = {
-    LoadoutSlot.AGENT_T: (TagsInternalName.AGENTS),
+_slot_tag_map_t: SlotTagMap = {
+    LoadoutSlot.AGENT_T: (TagsInternalName.AGENTS,),
     LoadoutSlot.KNIFE_T: (TagsInternalName.KNIVES,),
     LoadoutSlot.GLOCK_18: (TagsInternalName.GLOCK_18,),
     LoadoutSlot.P250_T: (TagsInternalName.P250,),
@@ -68,12 +76,10 @@ _slot_tag_map_t: dict[Enum, tuple[Enum]] = {
     LoadoutSlot.GLOVES_T: (TagsInternalName.GLOVES,),
 }
 
-_slot_tag_map: dict[Enum, tuple[Enum]] = {
-    LoadoutSlot.MUSIC_KIT: (TagsInternalName.MUSIC_KITS,)
-}
+_slot_tag_map: SlotTagMap = {LoadoutSlot.MUSIC_KIT: (TagsInternalName.MUSIC_KITS,)}
 
 # Market hash names of T agents
-_agents_t: tuple[str] = (
+_agents_t: tuple[str, ...] = (
     "Sir Bloody Miami Darryl | The Professionals",
     "Sir Bloody Loudmouth Darryl | The Professionals",
     "Sir Bloody Darryl Royale | The Professionals",
@@ -111,7 +117,7 @@ _agents_t: tuple[str] = (
 )
 
 # Market hash names of CT agents
-_agents_ct: tuple[str] = (
+_agents_ct: tuple[str, ...] = (
     "Special Agent Ava | FBI",
     "Lt. Commander Ricksaw | NSWC SEAL",
     "Cmdr. Mae 'Dead Cold' Jamison | SWAT",
@@ -155,7 +161,6 @@ _equippable: tuple = (
 class Item:
     """Represents a CS:GO Item"""
 
-    id: str
     assetid: str
     classid: str
     instanceid: str
@@ -196,7 +201,7 @@ class Item:
                     )
             setattr(self, k, v)
 
-    def __iter__(self) -> tuple:
+    def __iter__(self) -> Generator[Tuple[str, Union[str, int]], None, None]:
         for attr in dir(self):
             if not attr.startswith("_"):
                 yield attr, getattr(self, attr)
@@ -224,18 +229,14 @@ class Item:
     @cached_property
     def stickers(self) -> list[Sticker]:
         for desc in self.descriptions:
-            if "sticker_info" in (val := desc.get("value")):
+            if "sticker_info" in (val := desc.get("value", "")):
                 stickers: list[Sticker] = list()
-                if "Sticker" in val:
-                    regex_name = "Sticker"
-                    regex_link = "stickers"
-                else:
-                    regex_name = "Patch"
-                    regex_link = "patches"
+                regex_name = "Sticker" if "Sticker" in val else "Patch"
+                regex_link = "stickers" if "Sticker" in val else "patches"
 
                 links = iter(
                     re.findall(
-                        rf"https://steamcdn-a\.akamaihd\.net/apps/730/icons/econ/{regex_link}[\w|\d|\.|\/]+\.png",
+                        rf"https://steamcdn-a\.akamaihd\.net/apps/730/icons/econ/{regex_link}[\w|\d|\.|\/]+\.png",  # noqa: E501
                         val,
                     )
                 )
@@ -254,7 +255,7 @@ class Item:
         return []
 
     @cached_property
-    def rarity(self) -> str:
+    def rarity(self) -> Union[str, None]:
         for tag in self.tags:
             if tag["category"] == "Rarity":
                 for rarity in Rarity:

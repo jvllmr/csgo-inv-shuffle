@@ -1,8 +1,10 @@
 from enum import Enum, unique, auto
 
+
 class StrEnum(str, Enum):
     def _generate_next_value_(name, *_):
         return name.upper()
+
 
 @unique
 class Rarity(StrEnum):
