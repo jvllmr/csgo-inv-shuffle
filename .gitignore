@@ -6,3 +6,5 @@ dist
 *.egg-info
 .pytest_cache
 build
+test.txt
+.coverage

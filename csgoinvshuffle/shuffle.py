@@ -290,4 +290,4 @@ class ShuffleConfig:
             for _ in range(len(item_ids) - 1, n):
                 for slot in depending_itemslots:
                     index = int((len(item_ids) - 1) * random())
-                    self._slotmap.append(item_slot, item_ids[index])
+                    self._slotmap.append(slot, item_ids[index])
