@@ -13,14 +13,16 @@ import typing as t
 class SlotMap(list):
     def __init__(self, lst: list[t.Tuple[int, list[str]]] = None):
         if lst:
-            try:
-                assert len(lst) == len(LoadoutSlot)
-                for enum, slot in zip(LoadoutSlot, lst):
-                    assert enum == slot[0]
-                    for _str in slot[1]:
-                        assert isinstance(_str, str)
-            except AssertionError:
-                raise ValueError("List contains invalid values. Cannot create SlotMap")
+
+            for loadout_slot, item_ids in lst:
+                if loadout_slot not in LoadoutSlot:
+                    raise ValueError(f"{loadout_slot} is not a valid loadoutslot")
+                for id in item_ids:
+                    if not isinstance(id, str):
+                        raise TypeError(f"{item_ids} must be a list of strings")
+            for enum in LoadoutSlot:
+                if enum.value not in map(lambda x: x[0], lst):
+                    lst.append((enum.value, []))
         else:
             lst = list()
             for enum in LoadoutSlot:
