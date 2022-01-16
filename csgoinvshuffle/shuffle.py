@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from csgoinvshuffle.utils import get_depending_item_slots
+from csgoinvshuffle.utils import get_depending_item_slots, get_loadout_slot_enum_value
 from csgoinvshuffle.item import Item
 from csgoinvshuffle import shuffleformat
 from csgoinvshuffle.enums import LoadoutSlot, TeamSide
@@ -15,11 +15,24 @@ class SlotMap(list):
         if lst:
 
             for loadout_slot, item_ids in lst:
-                if loadout_slot not in LoadoutSlot:
+                try:
+                    get_loadout_slot_enum_value(loadout_slot)
+                except ValueError:
                     raise ValueError(f"{loadout_slot} is not a valid loadoutslot")
                 for id in item_ids:
                     if not isinstance(id, str):
                         raise TypeError(f"{item_ids} must be a list of strings")
+
+                # Adjust depending loadout slots
+                for other_slot in get_depending_item_slots(loadout_slot):
+                    if other_slot not in map(lambda x: x[0], lst):
+                        lst.append((other_slot, item_ids))
+                    else:
+                        for other_loadout_slot, other_item_ids in lst:
+                            if other_slot == other_loadout_slot:
+                                assert item_ids == other_item_ids
+                                break
+            # Add the missing loadout slots
             for enum in LoadoutSlot:
                 if enum.value not in map(lambda x: x[0], lst):
                     lst.append((enum.value, []))
