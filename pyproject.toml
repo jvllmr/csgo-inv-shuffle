@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "csgoinvshuffle"
-version = "1.3.2"
+version = "1.3.3"
 description = "A module for creating CS:GO inventory shuffle config files"
 authors = ["Jan Vollmer <zunder325@gmail.com>"]
 license = "MIT License"
