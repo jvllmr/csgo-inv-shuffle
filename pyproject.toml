@@ -39,8 +39,9 @@ build-backend = "poetry.core.masonry.api"
 files = ["csgoinvshuffle"]
 
 [tool.flake8]
+max-line-length = 90
 exclude = ["test.py","setup.py",".venv"]
-max-line-length=90
+
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
