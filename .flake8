@@ -1,6 +1,0 @@
-[flake8]
-exclude = 
-    test.py,
-    setup.py,
-    .venv
-max-line-length=90
