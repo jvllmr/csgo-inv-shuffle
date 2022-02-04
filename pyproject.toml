@@ -30,6 +30,7 @@ pytest = "^7.0.0"
 flake8 = "^4.0.1"
 black = "^22.1"
 mypy = ">=0.910"
+pre-commit = "^2.17.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -42,6 +43,8 @@ files = ["csgoinvshuffle"]
 max-line-length = 90
 exclude = ["test.py","setup.py",".venv"]
 
+[tool.isort]
+profile = "black"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

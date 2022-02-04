@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-from csgoinvshuffle.utils import get_depending_item_slots, get_loadout_slot_enum_value
-from csgoinvshuffle.item import Item
-from csgoinvshuffle import shuffleformat
-from csgoinvshuffle.enums import LoadoutSlot, TeamSide
+import typing as t
 from functools import cache, reduce
 from os.path import abspath
 from random import random
-import typing as t
+
+from csgoinvshuffle import shuffleformat
+from csgoinvshuffle.enums import LoadoutSlot, TeamSide
+from csgoinvshuffle.item import Item
+from csgoinvshuffle.utils import get_depending_item_slots, get_loadout_slot_enum_value
 
 
 class SlotMap(list):
@@ -302,7 +303,7 @@ class ShuffleConfig:
             if not item_ids:
                 continue
 
-            for _ in range(len(item_ids) - 1, n):
+            while len(item_ids) < n:
                 for slot in depending_itemslots:
                     index = int((len(item_ids) - 1) * random())
                     self._slotmap.append(slot, item_ids[index])

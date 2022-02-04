@@ -1,6 +1,7 @@
-from csgoinvshuffle.shuffle import ShuffleConfig, SlotMap
-from utils import new_shuffleconfig, example_csgo_saved_item_shuffles
+from utils import example_csgo_saved_item_shuffles, new_shuffleconfig
+
 from csgoinvshuffle.enums import LoadoutSlot
+from csgoinvshuffle.shuffle import ShuffleConfig, SlotMap
 
 
 def compare_configs():
@@ -28,3 +29,11 @@ def test_create_slotmap():
     assert (LoadoutSlot.AK_47.value, ["1234"]) in slotmap
     assert (LoadoutSlot.DEAGLE_CT.value, ["543"]) in slotmap
     assert (LoadoutSlot.M4A1_S.value, []) in slotmap
+
+
+def test_randomize(inv):
+    sc = ShuffleConfig()
+    sc.add_items(inv)
+    sc.randomize()
+    for _, id_list in sc._slotmap:
+        assert len(id_list) == 100
