@@ -62,7 +62,10 @@ class SlotMap(list):
         self, item_slot: t.Union[int, LoadoutSlot], item: t.Union[Item, str]
     ):
         if isinstance(item, Item):
+            if not item.id:
+                raise ValueError(f"Item {item} has no valid id")
             item = item.id
+
         if isinstance(item_slot, LoadoutSlot):
             item_slot = item_slot.value
         self[item_slot][1].append(item)
@@ -71,6 +74,8 @@ class SlotMap(list):
         self, item_slot: t.Union[int, LoadoutSlot], item: t.Union[Item, str]
     ) -> bool:
         if isinstance(item, Item):
+            if not item.id:
+                raise ValueError(f"Item {item} has no valid id")
             item = item.id
         if isinstance(item_slot, LoadoutSlot):
             item_slot = item_slot.value
@@ -95,6 +100,8 @@ class SlotMap(list):
         item: t.Union[Item, str],
     ):
         if isinstance(item, Item):
+            if not item.id:
+                raise ValueError(f"Item {item} has no valid id")
             item = item.id
         if isinstance(item_slot, LoadoutSlot):
             item_slot = item_slot.value
@@ -161,6 +168,8 @@ class ShuffleConfig:
             return
 
         for item_slot in shuffleslots:
+            if not item.id:
+                raise ValueError(f"Item {item} has no valid id")
             self._slotmap[item_slot] = item.id
 
     def set_item(self, cycle_slot: int, item: Item, side: int = TeamSide.BOTH):

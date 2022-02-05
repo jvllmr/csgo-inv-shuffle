@@ -28,6 +28,12 @@ repos:
       - id: trailing-whitespace
   - repo: local
     hooks:
+      - id: mypy
+        name: typechecking
+        pass_filenames: false
+        always_run: true
+        language: script
+        entry: .venv/bin/mypy --install-types --non-interactive
       - id: pytest
         name: pytest
         pass_filenames: false
