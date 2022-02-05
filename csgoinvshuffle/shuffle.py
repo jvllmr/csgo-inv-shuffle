@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import typing as t
-from functools import cache, reduce
+from functools import lru_cache, reduce
 from os.path import abspath
 from random import random
 
@@ -149,7 +149,7 @@ class ShuffleConfig:
         with open(self.path, "w") as f:
             f.write(self.generate())
 
-    @cache
+    @lru_cache()
     def __hex_convert(self, integer: int) -> str:
         converted = hex(integer).upper()
         while len(converted) < 18:

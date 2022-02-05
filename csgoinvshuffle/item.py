@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 import typing as t
 
@@ -221,15 +223,14 @@ class Item:
 
     @property
     def custom_name(self) -> str:
-        if attr := getattr(self, "fraudwarnings", ""):
-            return attr[0].split(":", 1)[1].lstrip(" ").strip("'")
-        else:
-            return ""
+        attr = getattr(self, "fraudwarnings", "")
+        return attr[0].split(":", 1)[1].lstrip(" ").strip("'") if attr else attr
 
     @property
     def stickers(self) -> list[Sticker]:
         for desc in getattr(self, "descriptions", []):
-            if "sticker_info" in (val := desc.get("value", "")):
+            val = desc.get("value", "")
+            if "sticker_info" in val:
                 stickers: list[Sticker] = list()
                 regex_name = "Sticker" if "Sticker" in val else "Patch"
                 regex_link = "stickers" if "Sticker" in val else "patches"
@@ -283,7 +284,8 @@ class Item:
 
         for slot, tag_names in needed_map.items():
             for tag in getattr(self, "tags", []):
-                if (internal_name := tag["internal_name"]) in tag_names:
+                internal_name = tag["internal_name"]
+                if internal_name in tag_names:
                     if internal_name == TagsInternalName.AGENTS:
                         if side == TeamSide.CT and self.market_hash_name in _agents_ct:
                             slots.append(slot.value)

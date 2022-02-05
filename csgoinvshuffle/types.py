@@ -1,6 +1,8 @@
-from typing import Tuple, TypedDict
-from csgoinvshuffle.enums.filters_enums import TagsInternalName
+import typing as t
 
+from typing_extensions import TypedDict
+
+from csgoinvshuffle.enums.filters_enums import TagsInternalName
 from csgoinvshuffle.enums.loadout_slots import LoadoutSlot
 
 
@@ -32,4 +34,4 @@ class Sticker(TypedDict):
     link: str
 
 
-SlotTagMap = dict[LoadoutSlot, Tuple[TagsInternalName, ...]]
+SlotTagMap = t.Dict[LoadoutSlot, t.Tuple[TagsInternalName, ...]]
