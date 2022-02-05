@@ -74,7 +74,19 @@ class SlotMap(list):
             item = item.id
         if isinstance(item_slot, LoadoutSlot):
             item_slot = item_slot.value
-        return self[item_slot][1].remove(item)
+        if item in self[item_slot][1]:
+            for i in range(len(self[item_slot][1])):
+                if self[item_slot][1][-1 - i]:
+                    index = len(self[item_slot][1]) - i - 1
+                    break
+
+            self[item_slot][1].remove(item)
+
+            try:
+                return item != self[item_slot][1][index]
+            except IndexError:
+                return True
+        return False
 
     def insert(  # type: ignore
         self,
@@ -175,9 +187,8 @@ class ShuffleConfig:
         """
         Sets items starting from the cycle slot in the config
         """
-        for item in items:
-            self.set_item(cycle_slot, item, side)
-            cycle_slot += 1
+        self.set_item(cycle_slot, items[0], side)
+        self.add_items(items[1:], side)
 
     def __add_item(
         self, item: Item, shuffleslots: list[int], side: int = TeamSide.BOTH
@@ -219,7 +230,7 @@ class ShuffleConfig:
         for item_slot in shuffleslots:
             lst.append(self._slotmap.remove(item_slot, item))
 
-        return reduce(lambda x, y: x and y, lst)
+        return reduce(lambda x, y: x and y, lst, True)
 
     def remove_item(self, item: Item, side: int = TeamSide.BOTH) -> bool:
         """

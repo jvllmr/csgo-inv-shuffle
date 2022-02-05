@@ -1,12 +1,17 @@
-from csgoinvshuffle.types import SlotTagMap
-from csgoinvshuffle.utils import get_depending_item_slots, get_loadout_slot_enum_value
+import pytest
+
 from csgoinvshuffle.enums import LoadoutSlot
 from csgoinvshuffle.item import _slot_tag_map, _slot_tag_map_ct, _slot_tag_map_t
+from csgoinvshuffle.types import SlotTagMap
+from csgoinvshuffle.utils import get_depending_item_slots, get_loadout_slot_enum_value
 
 
 def test_get_loadout_slot_enum_value():
     for enum_value in LoadoutSlot:
         assert get_loadout_slot_enum_value(enum_value.value) == enum_value
+
+    with pytest.raises(ValueError):
+        get_loadout_slot_enum_value(1)
 
 
 def __test_get_depending_item_slots(slot_tag_map: SlotTagMap):

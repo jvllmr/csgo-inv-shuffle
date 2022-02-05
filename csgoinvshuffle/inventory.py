@@ -1,10 +1,13 @@
 from __future__ import annotations
-from typing import Iterator, Optional, SupportsIndex
-from csgoinvshuffle.enums.filters_enums import TagsInternalName
+
+import typing as t
+from enum import Enum, EnumMeta
+
 import requests
+
+from csgoinvshuffle.enums.filters_enums import TagsInternalName
 from csgoinvshuffle.exceptions import InventoryIsPrivateException, TooManyRequestsAtOnce
 from csgoinvshuffle.item import Item
-from enum import Enum, EnumMeta
 
 
 class NotAnItemError(TypeError):
@@ -39,10 +42,10 @@ class Inventory(list):
             for item in items:
                 self.append(item)
 
-    def __iter__(self) -> Iterator[Item]:  # type: ignore
+    def __iter__(self) -> t.Iterator[Item]:  # type: ignore
         return super().__iter__()
 
-    def __getitem__(self, i: SupportsIndex) -> Item:  # type: ignore
+    def __getitem__(self, i: t.SupportsIndex) -> Item:  # type: ignore
         return super().__getitem__(i)
 
     def append(self, item: Item):
@@ -57,7 +60,10 @@ class Inventory(list):
         return str(list(map(lambda item: str(item), self)))
 
     def filter(self, value: Enum, filter_by: EnumMeta = TagsInternalName) -> Inventory:
-        """Filter the inventory by a special property"""
+        """
+        Filter the inventory by a special property
+        Returns an Inventory with the filtered items
+        """
 
         if not isinstance(filter_by, EnumMeta):
             raise TypeError("filter_by argument needs to be an EnumMeta")
@@ -85,7 +91,7 @@ def parse_inventory(json: dict, steamid64: str) -> Inventory:
     return inv
 
 
-def get_inventory(steamid64: str) -> Optional[Inventory]:
+def get_inventory(steamid64: str) -> Inventory | None:
     """
     Get the CS:GO Inventory of a steam user by his 64-bit ID
 

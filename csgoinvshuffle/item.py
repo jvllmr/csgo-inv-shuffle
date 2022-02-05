@@ -1,18 +1,16 @@
-from functools import cached_property
+import re
+import typing as t
+
 from csgoinvshuffle.enums import LoadoutSlot, TagsInternalName, TeamSide
 from csgoinvshuffle.enums.rarities import Rarity
 from csgoinvshuffle.types import (
-    Description,
     Action,
+    Description,
     MarketAction,
     SlotTagMap,
     Sticker,
     Tag,
 )
-
-from typing import Tuple, Generator, Union
-
-import re
 
 _slot_tag_map_ct: SlotTagMap = {
     LoadoutSlot.AGENT_CT: (TagsInternalName.AGENTS,),
@@ -188,7 +186,9 @@ class Item:
     tags: list[Tag]
     fraudwarnings: list[str]
 
-    def __init__(self, description, asset, steamid64):
+    def __init__(
+        self, description: dict[str, t.Any], asset: dict[str, t.Any], steamid64: str
+    ):
         for k, v in asset.items():
             setattr(self, k, v)
         for k, v in description.items():
@@ -201,7 +201,7 @@ class Item:
                     )
             setattr(self, k, v)
 
-    def __iter__(self) -> Generator[Tuple[str, Union[str, int]], None, None]:
+    def __iter__(self) -> t.Generator[t.Tuple[str, t.Union[str, int]], None, None]:
         for attr in dir(self):
             if not attr.startswith("_"):
                 yield attr, getattr(self, attr)
@@ -215,20 +215,20 @@ class Item:
             custom_name_string = f"custom_name: '{self.custom_name}', "
         return f"<Item name: '{self.name}' {custom_name_string} id: {self.id}>"
 
-    @cached_property
-    def id(self) -> str:
-        return self.assetid
+    @property
+    def id(self) -> t.Optional[str]:
+        return getattr(self, "assetid", None)
 
-    @cached_property
+    @property
     def custom_name(self) -> str:
         if attr := getattr(self, "fraudwarnings", ""):
             return attr[0].split(":", 1)[1].lstrip(" ").strip("'")
         else:
             return ""
 
-    @cached_property
+    @property
     def stickers(self) -> list[Sticker]:
-        for desc in self.descriptions:
+        for desc in getattr(self, "descriptions", []):
             if "sticker_info" in (val := desc.get("value", "")):
                 stickers: list[Sticker] = list()
                 regex_name = "Sticker" if "Sticker" in val else "Patch"
@@ -242,8 +242,8 @@ class Item:
                 )
 
                 names = iter(
-                    re.findall(rf"<br>{regex_name}:[\w|\s|\(|\)|\,]+", val)[0]
-                    .lstrip("<br>Patch: ")
+                    re.findall(rf"<br>{regex_name}:[\w\(\)\,\| ]+", val)[0]
+                    .lstrip(f"<br>{regex_name}: ")
                     .split(", ")
                 )
 
@@ -254,18 +254,18 @@ class Item:
                     return stickers
         return []
 
-    @cached_property
-    def rarity(self) -> Union[str, None]:
-        for tag in self.tags:
+    @property
+    def rarity(self) -> t.Optional[str]:
+        for tag in getattr(self, "tags", []):
             if tag["category"] == "Rarity":
                 for rarity in Rarity:
                     if rarity.value.lower() in tag["internal_name"].lower():
                         return rarity.value
         return None
 
-    @cached_property
+    @property
     def equippable(self) -> bool:
-        for tag in self.tags:
+        for tag in getattr(self, "tags", []):
             for name in _equippable:
                 if name in tag["internal_name"]:
                     return True
@@ -282,7 +282,7 @@ class Item:
         slots = list()
 
         for slot, tag_names in needed_map.items():
-            for tag in self.tags:
+            for tag in getattr(self, "tags", []):
                 if (internal_name := tag["internal_name"]) in tag_names:
                     if internal_name == TagsInternalName.AGENTS:
                         if side == TeamSide.CT and self.market_hash_name in _agents_ct:
@@ -294,14 +294,14 @@ class Item:
 
         return slots if self.equippable else []
 
-    @cached_property
+    @property
     def shuffle_slots_t(self) -> list[int]:
         return self.__shuffle_slots(TeamSide.T)
 
-    @cached_property
+    @property
     def shuffle_slots_ct(self) -> list[int]:
         return self.__shuffle_slots(TeamSide.CT)
 
-    @cached_property
+    @property
     def shuffle_slots(self) -> list[int]:
         return self.__shuffle_slots()
