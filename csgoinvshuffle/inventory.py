@@ -29,15 +29,18 @@ class Inventory(list):
     ):
         if assets and descriptions and steamid64:
             self.owner_id = steamid64
-            assets = iter(assets)
-            descriptions = iter(descriptions)
-            try:
-                while True:
-                    self.append(
-                        Item(next(descriptions), next(assets), steamid64=steamid64)
-                    )
-            except StopIteration:
-                return
+            for asset in assets:
+                instance_id = asset.get("instanceid", None)
+                class_id = asset.get("classid", None)
+                for desc in descriptions:
+                    if (
+                        desc.get("instanceid", "") == instance_id
+                        and desc.get("classid", "") == class_id
+                    ):
+                        self.append(
+                            Item(description=desc, asset=asset, steamid64=steamid64)
+                        )
+                        break
         else:
             for item in items:
                 self.append(item)

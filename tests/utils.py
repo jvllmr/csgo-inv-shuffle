@@ -25,4 +25,4 @@ def new_shuffleconfig() -> str:
     f = open("./csgo_saved_item_shuffles.txt", "r", encoding="utf-8")
     data = f.read()
     f.close()
-    return data
+    return data + "\n"
