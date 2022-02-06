@@ -317,7 +317,8 @@ class ShuffleConfig:
         Takes the items in the ShuffleConfig
         and stacks them up to a cycle slot n in random order.
         """
-        for item_slot, item_ids in self._slotmap:
+        slotmap_copy = SlotMap([*self._slotmap])
+        for item_slot, item_ids in slotmap_copy:
             depending_itemslots = get_depending_item_slots(item_slot)
 
             if not item_ids:
