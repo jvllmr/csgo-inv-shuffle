@@ -56,7 +56,7 @@ jobs:
           python -m pip install poetry
           python -m poetry install
       - name: Run coverage tests
-        run: python -m poetry run pytest --cov=csgoinvshuffle --cov-report=html:coverage
+        run: python -m poetry run pytest --cov=csgoinvshuffle --cov-report=xml:coverage.xml
       - name: Upload coverage
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
