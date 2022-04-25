@@ -75,15 +75,11 @@ def test_operations(item: Item):
     for side in TeamSide:
         sc = ShuffleConfig()
         sc.set_items(0, [item, item2, item3], side)
-        assert (
-            sc._slotmap[LoadoutSlot.UMP_45_CT][1]
-            == [
-                item.id,
-                item2.id,
-                item3.id,
-            ]
-            or sc._slotmap[LoadoutSlot.UMP_45_T][1] == [item.id, item2.id, item3.id]
-        )
+        assert sc._slotmap[LoadoutSlot.UMP_45_CT][1] == [
+            item.id,
+            item2.id,
+            item3.id,
+        ] or sc._slotmap[LoadoutSlot.UMP_45_T][1] == [item.id, item2.id, item3.id]
 
         sc.insert_items([item3, item], 2, side)
 
@@ -102,12 +98,8 @@ def test_operations(item: Item):
         ]
 
         assert sc.remove_items([item2, item3], side) is True
-        assert (
-            sc._slotmap[LoadoutSlot.UMP_45_CT][1]
-            == [
-                item.id,
-                item.id,
-                item3.id,
-            ]
-            or sc._slotmap[LoadoutSlot.UMP_45_T][1] == [item.id, item.id, item3.id]
-        )
+        assert sc._slotmap[LoadoutSlot.UMP_45_CT][1] == [
+            item.id,
+            item.id,
+            item3.id,
+        ] or sc._slotmap[LoadoutSlot.UMP_45_T][1] == [item.id, item.id, item3.id]
