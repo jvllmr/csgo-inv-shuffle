@@ -1,5 +1,6 @@
-from csgoinvshuffle.enums import LoadoutSlot
 from typing import List
+
+from csgoinvshuffle.enums import LoadoutSlot
 from csgoinvshuffle.item import _slot_tag_map, _slot_tag_map_ct, _slot_tag_map_t
 from csgoinvshuffle.types import SlotTagMap
 

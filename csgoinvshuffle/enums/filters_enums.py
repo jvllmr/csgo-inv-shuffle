@@ -1,6 +1,5 @@
 from enum import Enum, unique
 
-
 """
 This file contains enums for filtering through inventories
 """

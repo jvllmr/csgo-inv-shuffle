@@ -2,6 +2,7 @@
 
 
 from enum import IntEnum, unique
+
 from deprecated import deprecated
 
 
