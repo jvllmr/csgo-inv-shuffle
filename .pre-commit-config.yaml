@@ -1,10 +1,5 @@
 fail_fast: true
 repos:
-  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-    rev: v1.2.2
-    hooks:
-      - id: python-safety-dependencies-check
-        args: [--ignore=40459]
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.31.0
     hooks:
@@ -39,13 +34,6 @@ repos:
         always_run: true
         language: script
         entry: .venv/bin/mypy --install-types --non-interactive
-      - id: pytest
-        name: pytest
-        pass_filenames: false
-        language: script
-        stages: [commit, merge-commit]
-        types_or: [python, toml]
-        entry: .venv/bin/pytest
       - id: pytest-cov
         name: pytest-cov
         pass_filenames: false
