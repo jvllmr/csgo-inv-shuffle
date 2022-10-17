@@ -2,7 +2,7 @@ import json
 
 
 def __read_file(file: str):
-    f = open("tests/test_data/" + file, "r", encoding="utf-8")
+    f = open("tests/test_data/" + file, encoding="utf-8")
     data = f.read()
     f.close()
     return data
@@ -22,7 +22,7 @@ def example_inv_repr() -> str:
 
 
 def new_shuffleconfig() -> str:
-    f = open("./csgo_saved_item_shuffles.txt", "r", encoding="utf-8")
+    f = open("./csgo_saved_item_shuffles.txt", encoding="utf-8")
     data = f.read()
     f.close()
     return data + "\n"
