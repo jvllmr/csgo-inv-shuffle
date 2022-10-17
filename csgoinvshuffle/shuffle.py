@@ -126,7 +126,7 @@ class ShuffleConfig:
         """
         ret = shuffleformat.HEADER
         for item_slot, item_ids in self._slotmap:
-            items = str()
+            items = ""
             for cycle_slot, item_id in enumerate(item_ids):
 
                 ITEM_ENTRY = shuffleformat.ITEM_ENTRY
