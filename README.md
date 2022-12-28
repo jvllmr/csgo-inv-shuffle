@@ -1,10 +1,12 @@
 # csgoinvshuffle
+
 [![PyPI version](https://badge.fury.io/py/csgoinvshuffle.svg)](https://badge.fury.io/py/csgoinvshuffle)
 [![GitHub license](https://img.shields.io/github/license/jvllmr/csgo-inv-shuffle)](https://github.com/kreyoo/csgo-inv-shuffle/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/jvllmr/csgo-inv-shuffle)](https://github.com/kreyoo/csgo-inv-shuffle/issues)
 ![PyPI - Downloads](https://img.shields.io/pypi/dd/csgoinvshuffle)
 ![Tests](https://github.com/kreyoo/csgo-inv-shuffle/actions/workflows/main.yml/badge.svg)
 ![Codecov](https://img.shields.io/codecov/c/github/jvllmr/csgo-inv-shuffle?style=plastic)
+
 # Description
 
 csgoinvshuffle is a Python package designed to generate inventory shuffle config files for the game CS:GO.
@@ -12,26 +14,25 @@ csgoinvshuffle is a Python package designed to generate inventory shuffle config
 With this package you can easily shuffle between different weapon types (e.g. M4A4 and M4A1-S) and have less limits in customizing the shuffle experience than with the in-game settings.
 
 ## Note:
+
 CS:GO never really queues your items in a random order.
 The items are arranged in one simple, predefined cycle.
 This package aims to creating shuffles to your liking with ease
 
 You can use the config file it creates and replace `<path_to_your_steam>/userdata/<your_steam_3id>/730/remote/cfg/csgo_saved_item_shuffles.txt` with it to apply your config.
 
-
 #### HINT:
+
 CS:GO needs to be closed while replacing the file
 
-
-
-
-
 # How to install
-```pip install csgoinvshuffle```
+
+`pip install csgoinvshuffle`
 
 # Basic usage
 
 ## Your steam inventory needs to be public!
+
 ### Basic shuffle for everything in your inventory with randomness
 
 ```python
@@ -43,6 +44,7 @@ with ShuffleConfig() as sc:
 ```
 
 ### Give items a certain order in the cycle
+
 ```python
 from csgoinvshuffle import ShuffleConfig, get_inventory
 from csgoinvshuffle.enums import TagsInternalName
@@ -62,7 +64,6 @@ Otherwise using the built-in filter() function on the Inventory Object is sugges
 To get an overview of what values the attributes of an Item can have, you can lookup https://steamcommunity.com/inventory/<YOUR_STEAM_ID_64>/730/2
 or lookup the typing definitions inside the item class.
 As mentioned, typical values for the property `tags_internal_name` are provided by the TagsInternalName enum.
-
 
 ### Create a shuffle cycle for only one team side
 

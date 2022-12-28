@@ -56,6 +56,11 @@ exclude = ["test.py","setup.py",".venv"]
 [tool.isort]
 profile = "black"
 
+[tool.pyaphid]
+forbidden = [
+    "print"
+    ]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
