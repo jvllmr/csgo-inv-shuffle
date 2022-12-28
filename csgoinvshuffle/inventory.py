@@ -102,7 +102,9 @@ def get_inventory(steamid64: str) -> Inventory | None:
     """
     if not steamid64:
         return None
-    r = requests.get(f"https://steamcommunity.com/inventory/{steamid64}/730/2")
+    r = requests.get(
+        f"https://steamcommunity.com/inventory/{steamid64}/730/2?count=1500"
+    )
 
     if r.status_code == 200:
         json = r.json()
