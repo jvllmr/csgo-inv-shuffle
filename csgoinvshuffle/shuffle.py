@@ -12,7 +12,7 @@ from csgoinvshuffle.utils import get_depending_item_slots, get_loadout_slot_enum
 
 
 class SlotMap(list):
-    def __init__(self, lst: list[t.Tuple[int, list[str]]] = None):
+    def __init__(self, lst: list[t.Tuple[int, list[str]]] | None = None):
         if lst:
 
             for loadout_slot, item_ids in lst:

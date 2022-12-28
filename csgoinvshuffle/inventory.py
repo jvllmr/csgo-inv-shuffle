@@ -25,7 +25,7 @@ class Inventory(list):
     owner_id: str
 
     def __init__(
-        self, *items: Item, assets=None, descriptions=None, steamid64: str = None
+        self, *items: Item, assets=None, descriptions=None, steamid64: str | None = None
     ):
         if assets and descriptions and steamid64:
             self.owner_id = steamid64
