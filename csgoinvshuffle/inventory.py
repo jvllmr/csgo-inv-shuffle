@@ -113,7 +113,7 @@ def get_inventory(steamid64: str) -> Inventory | None:
         return parse_inventory(json, steamid64)
     elif r.status_code == 403:
         raise InventoryIsPrivateException("The requested Inventory is private.")
-    elif r.status_code == 500:
+    elif r.status_code == 429:
         raise TooManyRequestsAtOnce(
             "Too many requests at once. Please try again in few seconds."
         )
