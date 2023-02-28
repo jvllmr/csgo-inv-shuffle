@@ -3,7 +3,6 @@ from csgoinvshuffle.item import Item
 
 
 def test_actual_item(item: Item):
-
     assert item.stickers[0]["name"] == "Dust II (Gold)"
     assert item.stickers[1]["name"] == "BIG (Gold) | Stockholm 2021"
     assert item.stickers[2]["name"] == "PGL (Gold) | Stockholm 2021"

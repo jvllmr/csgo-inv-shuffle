@@ -27,7 +27,6 @@ def test_get_inventory(inv: Inventory):
 
 
 def test_filter(inv: Inventory):
-
     filtered = list(
         filter(
             lambda x: x.custom_name == "Irgendwie...NICHT",
