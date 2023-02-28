@@ -66,7 +66,6 @@ def test_randomize(inv):
 
 
 def test_operations(item: Item):
-
     item2 = deepcopy(item)
     item3 = deepcopy(item)
     item2.assetid = "5678"

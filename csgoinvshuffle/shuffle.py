@@ -14,7 +14,6 @@ from csgoinvshuffle.utils import get_depending_item_slots, get_loadout_slot_enum
 class SlotMap(list):
     def __init__(self, lst: list[t.Tuple[int, list[str]]] | None = None):
         if lst:
-
             for loadout_slot, item_ids in lst:
                 try:
                     get_loadout_slot_enum_value(loadout_slot)
@@ -128,7 +127,6 @@ class ShuffleConfig:
         for item_slot, item_ids in self._slotmap:
             items = ""
             for cycle_slot, item_id in enumerate(item_ids):
-
                 ITEM_ENTRY = shuffleformat.ITEM_ENTRY
                 if cycle_slot > 9:
                     ITEM_ENTRY.replace(" ", "")
@@ -247,7 +245,6 @@ class ShuffleConfig:
         """
         ct = t = both = False
         if side == TeamSide.BOTH:
-
             if item.shuffle_slots_ct:
                 ct = self.remove_item(item, TeamSide.CT)
             else:
